@@ -64,10 +64,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -106,6 +107,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private JSONObject tempJSONObject;
     private JSONArray tempJSONArray;
 
+    private HashMap<Marker, String> markerHashMap = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +134,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         bubbleCard = (CardView) findViewById(R.id.bubble_card);
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
         //Change the text color when the user touches it
-        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
+        /*bubbleCard.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
@@ -144,7 +147,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 return false;
             }
-        });
+        });*/
 
 
         mapFragment.getMapAsync(this);
@@ -196,6 +199,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "OnMapReady");
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         updateLocation();
         Location m_location=getLocation();
@@ -235,11 +239,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        /*testlatlng.add(new LatLng(39.948891, -75.194438));
-        testlatlng.add(new LatLng(39.950204, -75.194074));
-        testlatlng.add(new LatLng(39.952509, -75.197745));
-        testlatlng.add(new LatLng(39.947865, -75.170997));
-        testlatlng.add(new LatLng(39.948558, -75.123054));*/
         fetchOwners();
 
 //        mMap.setMyLocationEnabled(true);
@@ -260,6 +259,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onResponse(JSONObject response)
             {
+                List<String> emailList=new ArrayList<>();
                 try
                 {
                     tempJSONArray = response.getJSONArray("data");
@@ -269,20 +269,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         double latitude=Double.parseDouble(tempJSONObject.getString("latitude"));
                         double longitude=Double.parseDouble(tempJSONObject.getString("longitude"));
                         testlatlng.add(new LatLng(latitude, longitude));
-                        Toast.makeText(MapsActivity.this, "" + latitude + " " + longitude, Toast.LENGTH_SHORT).show();
+                        String email=tempJSONObject.getString("email");
+                        emailList.add(email);
                     }
                 }
                 catch(JSONException e)
                 {
                     Toast.makeText(MapsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
+                int j=0;
                 for (LatLng i : testlatlng) {
-                    testMarkers.add(mMap.addMarker(new MarkerOptions()
+                    Marker marker=mMap.addMarker(new MarkerOptions()
                             .position(i)
                             .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
                             .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
                             .visible(false)
-                    ));
+                    );
+                    testMarkers.add(marker);
+                    markerHashMap.put(marker, emailList.get(j++));
                 }
             }
         },
@@ -406,6 +410,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .show();
         }
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(MapsActivity.this, markerHashMap.get(marker).toString(), Toast.LENGTH_SHORT).show();
+        return true;
     }
 
 
