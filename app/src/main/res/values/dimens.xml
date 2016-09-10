@@ -27,7 +27,7 @@
     <dimen name="list_row_padding">14.0dip</dimen>
 
 
-    <dimen name="font_10">8.0sp</dimen>
+    <dimen name="font_10">8.0sp</dimen>@dimen/font_22
     <dimen name="font_11">9.0sp</dimen>
     <dimen name="font_13">11.0sp</dimen>
     <dimen name="font_14">12.0sp</dimen>

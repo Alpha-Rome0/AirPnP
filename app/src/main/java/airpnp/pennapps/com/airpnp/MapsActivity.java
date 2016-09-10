@@ -381,15 +381,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCityOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_STREET);
 
-            if (resultCode == AppUtils.LocationConstants.SUCCESS_RESULT) {
-;
-            }
+//            if (resultCode == AppUtils.LocationConstants.SUCCESS_RESULT) {
+//;
+//            }
 
 
         }
 
     }
-    
+
     /**
      * Creates an intent, adds location data to it as an extra, and starts the intent service for
      * fetching an address.
