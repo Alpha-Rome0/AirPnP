@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="false"
+    android:id="@+id/cl">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -59,42 +60,42 @@
             android:gravity="center"
             android:orientation="vertical" >
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/bubble_card"
-                android:focusable="true"
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="#EE37474F"
-                app:cardElevation="4dp">
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:id="@+id/bubble_card"-->
+                <!--android:focusable="true"-->
+                <!--android:clickable="true"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:cardCornerRadius="16dp"-->
+                <!--app:cardBackgroundColor="#EE37474F"-->
+                <!--app:cardElevation="4dp">-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="6dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="6dp"-->
+                    <!--android:layout_marginStart="4dp"-->
+                    <!--android:layout_marginEnd="4dp">-->
 
-                    <TextView
-                        android:id="@+id/locationMarkertext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:gravity="center"
-                        android:text="Set Destination Area ⏎"
-                        android:textColor="#fff" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/locationMarkertext"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="16sp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:visibility="invisible"-->
+                        <!--android:text="Use the pin to find parking spots near you ⏎"-->
+                        <!--android:textColor="#fff" />-->
 
-                </LinearLayout>
+                <!--</LinearLayout>-->
 
-            </android.support.v7.widget.CardView>
+            <!--</android.support.v7.widget.CardView>-->
 
             <ImageView
                 android:id="@+id/imageMarker"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/push_pin" />
-
 
         </LinearLayout>
 

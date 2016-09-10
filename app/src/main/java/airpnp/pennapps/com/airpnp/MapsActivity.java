@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.Settings;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -108,6 +110,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private HashMap<Marker, String> markerHashMap = new HashMap<>();
 
+    CoordinatorLayout cl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,8 +123,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-
         searchText = (TextView) findViewById(R.id.search_text);
         searchCard = (CardView) findViewById(R.id.search_card);
         searchCard.setOnClickListener(new View.OnClickListener() {
@@ -130,24 +132,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        bubbleCard = (CardView) findViewById(R.id.bubble_card);
-        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-        //Change the text color when the user touches it
-        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
-                        bubbleCard.setVisibility(View.INVISIBLE);
-                        break;
-                }
-                return false;
-            }
-        });
+        cl = (CoordinatorLayout) findViewById(R.id.cl);
+        final Snackbar snackbar = Snackbar
+                .make(cl, "Use the pin to find parking spots near you", Snackbar.LENGTH_LONG)
+                .setAction("DISMISS", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                });
+        snackbar.show();
+
+//        bubbleCard = (CardView) findViewById(R.id.bubble_card);
+//        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
+//        //Change the text color when the user touches it
+//        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
+//                        bubbleCard.setVisibility(View.INVISIBLE);
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
 
 
         mapFragment.getMapAsync(this);
@@ -200,7 +212,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "OnMapReady");
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         updateLocation();
         m_Location = getLocation();
