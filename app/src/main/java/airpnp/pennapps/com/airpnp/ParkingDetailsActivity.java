@@ -32,6 +32,9 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     private JSONArray tempJSONArray;
 
     Button arrivalStartDateBtn;
+    Button arrivalStartTimeBtn;
+    Button arrivalEndDateBtn;
+    Button arrivalEndTimeBtn;
 
 
     @Override
@@ -41,13 +44,35 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         email=getIntent().getStringExtra("owner_email");
         getParkingDetails();
 
-        arrivalStartDateBtn = (Button) findViewById(R.id.btn_arrival_start_date);
+        arrivalStartDateBtn = (Button) findViewById(R.id.btn_start_date);
         arrivalStartDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setDate(true);
             }
         });
+        arrivalStartTimeBtn = (Button) findViewById(R.id.btn_start_time);
+        arrivalStartTimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTime(true);
+            }
+        });
+        arrivalEndDateBtn = (Button) findViewById(R.id.btn_end_date);
+        arrivalEndDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDate(false);
+            }
+        });
+        arrivalEndTimeBtn = (Button) findViewById(R.id.btn_end_time);
+        arrivalEndTimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTime(false);
+            }
+        });
+
     }
 
     public void getParkingDetails()
@@ -98,7 +123,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest1);
     }
 
-    public void setDate(boolean isArrivalDate) {
+    public void setDate(boolean isArrival) {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 new DatePickerDialog.OnDateSetListener() {
@@ -112,6 +137,10 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 now.get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    public void setTime(boolean isArrival) {
+
     }
 
     public void bookParking(View view) {
