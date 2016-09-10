@@ -2,6 +2,7 @@ package airpnp.pennapps.com.airpnp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,19 +13,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
 
 public class ParkingDetailsActivity extends AppCompatActivity {
 
@@ -70,7 +68,6 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
                     Date date=new Date();
                     //textView3.setText(simpleDateFormat.format(date));
-
                 }
                 catch(JSONException e)
                 {
@@ -89,8 +86,19 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest1);
     }
 
-    public void button1_onClick(View v)
-    {
-
+    public void setDate(boolean isArrivalDate) {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        Log.d("FUCK", year + " " + monthOfYear + " " + dayOfMonth);
+                    }
+                },
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.show(getFragmentManager(), "Datepickerdialog");
     }
 }

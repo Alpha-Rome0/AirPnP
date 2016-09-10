@@ -39,4 +39,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     compile 'com.google.maps.android:android-maps-utils:0.4+'
+
+    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
 }
