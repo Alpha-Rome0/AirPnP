@@ -39,8 +39,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,7 +56,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     Context mContext;
     TextView mLocationMarkerText;
     private LatLng mCenterLatLong;
+    private ArrayList<LatLng> testlatlng=new ArrayList<>();
+    private ArrayList<Marker> testMarkers=new ArrayList<>();
 
+    public static final double earth = 6372.8; // In kilometers
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
@@ -68,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected String mStateOutput;
     EditText mLocationAddress;
     TextView mLocationText;
-    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+
     Toolbar mToolbar;
 
 
@@ -89,6 +96,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+
+
+
+
 
 
         mLocationText.setOnClickListener(new View.OnClickListener() {
@@ -149,15 +160,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "OnMapReady");
         mMap = googleMap;
-
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 Log.d("Camera postion change" + "", cameraPosition + "");
                 mCenterLatLong = cameraPosition.target;
 
-
-                mMap.clear();
 
                 try {
 
@@ -167,22 +176,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     startIntentService(mLocation);
                     mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
+                    for(Marker m:testMarkers){
+                        LatLng l=m.getPosition();
+                        double d=haversine(mCenterLatLong.latitude,mCenterLatLong.longitude,l.latitude,l.longitude);
+                        if(d<0.4)m.setVisible(true);
+                        else m.setVisible(false);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+
+        testlatlng.add(new LatLng(39.948891, -75.194438));
+        testlatlng.add(new LatLng(39.950204, -75.194074));
+        testlatlng.add(new LatLng(39.952509, -75.197745));
+        testlatlng.add(new LatLng(39.947865, -75.170997));
+        testlatlng.add(new LatLng(39.948558, -75.123054));
+
+        for (LatLng i : testlatlng){
+            testMarkers.add(mMap.addMarker(new MarkerOptions()
+                    .position(i)
+                    .visible(false)
+            ));
         }
+
 //        mMap.setMyLocationEnabled(true);
 //        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 //
@@ -247,7 +266,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mGoogleApiClient, this);
 
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -308,20 +326,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "Reaching map" + mMap);
 
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
         // check if map is created successfully or not
         if (mMap != null) {
-            mMap.getUiSettings().setZoomControlsEnabled(false);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
             LatLng latLong;
 
 
@@ -468,18 +475,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLong).zoom(19f).tilt(70).build();
-
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
+                //Log.d("!!!!!!",String.valueOf(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
+                try {
+                    mMap.setMyLocationEnabled(true);
+                } catch (SecurityException s) {
+                    s.printStackTrace();
                 }
-                mMap.setMyLocationEnabled(true);
                 mMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(cameraPosition));
 
@@ -502,7 +503,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-                result.append(addresses.get(0).getAddressLine(0)+"\n");
+                result.append(addresses.get(0).getAddressLine(0) + "\n");
                 result.append(address.getLocality());
             }
         } catch (IOException e) {
@@ -510,5 +511,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         return result.toString();
+    }
+
+    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+
+        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return earth * c;
     }
 }
