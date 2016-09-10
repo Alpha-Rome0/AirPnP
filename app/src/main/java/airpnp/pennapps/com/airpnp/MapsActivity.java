@@ -142,6 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         break;
                     case MotionEvent.ACTION_UP:
                         mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
+                        bubbleCard.setVisibility(View.INVISIBLE);
                         break;
                 }
                 return false;
