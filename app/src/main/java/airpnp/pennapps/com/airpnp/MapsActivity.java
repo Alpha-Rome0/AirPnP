@@ -132,6 +132,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bubbleCard = (CardView) findViewById(R.id.bubble_card);
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
+        //Change the text color when the user touches it
+        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
+                        break;
+                }
+                return false;
+            }
+        });
 
 
         mapFragment.getMapAsync(this);
@@ -391,6 +406,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         intent.putExtra("owner_email", markerHashMap.get(marker));
         startActivity(intent);
         return true;
+    }
+
+    public void displayParkingDetails(View view) {
+        Intent intent = new Intent(MapsActivity.this, ParkingDetailsActivity.class);
+        startActivity(intent);
     }
 
 
