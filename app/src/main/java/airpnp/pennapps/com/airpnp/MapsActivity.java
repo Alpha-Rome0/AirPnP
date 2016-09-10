@@ -387,6 +387,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    public void displayParkingDetails(View view) {
+        Intent intent = new Intent(MapsActivity.this, ParkingDetailsActivity.class);
+        startActivity(intent);
+    }
+
 
     /**
      * Receiver for data sent from FetchAddressIntentService.
