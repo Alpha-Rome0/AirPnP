@@ -79,6 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/editText4"
+                android:inputType="number"
                 android:hint="Mobile"
                 android:layout_marginTop="15dp"
                 android:layout_below="@+id/editText3"/>
@@ -90,6 +91,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:id="@+id/editText5"
                 android:hint="Password"
                 android:layout_below="@+id/editText4"
@@ -103,6 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/editText6"
+                android:inputType="textPassword"
                 android:hint="Re-enter Password"
                 android:layout_below="@+id/editText5"
                 android:layout_marginTop="15dp" />
