@@ -28,6 +28,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -51,6 +57,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,6 +102,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     CardView bubbleCard;
 
     TextView searchText;
+
+    private JSONObject tempJSONObject;
+    private JSONArray tempJSONArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,20 +235,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        testlatlng.add(new LatLng(39.948891, -75.194438));
+        /*testlatlng.add(new LatLng(39.948891, -75.194438));
         testlatlng.add(new LatLng(39.950204, -75.194074));
         testlatlng.add(new LatLng(39.952509, -75.197745));
         testlatlng.add(new LatLng(39.947865, -75.170997));
-        testlatlng.add(new LatLng(39.948558, -75.123054));
-
-        for (LatLng i : testlatlng) {
-            testMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .position(i)
-                    .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
-                    .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
-                    .visible(false)
-            ));
-        }
+        testlatlng.add(new LatLng(39.948558, -75.123054));*/
+        fetchOwners();
 
 //        mMap.setMyLocationEnabled(true);
 //        mMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -244,6 +249,52 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public void fetchOwners()
+    {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://li367-204.members.linode.com/listowners";
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    tempJSONArray = response.getJSONArray("data");
+                    for(int i=0;i<tempJSONArray.length();i++)
+                    {
+                        tempJSONObject=tempJSONArray.getJSONObject(i);
+                        double latitude=Double.parseDouble(tempJSONObject.getString("latitude"));
+                        double longitude=Double.parseDouble(tempJSONObject.getString("longitude"));
+                        testlatlng.add(new LatLng(latitude, longitude));
+                        Toast.makeText(MapsActivity.this, "" + latitude + " " + longitude, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(JSONException e)
+                {
+                    Toast.makeText(MapsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+                for (LatLng i : testlatlng) {
+                    testMarkers.add(mMap.addMarker(new MarkerOptions()
+                            .position(i)
+                            .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
+                            .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
+                            .visible(false)
+                    ));
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(MapsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest1);
     }
 
     @Override
