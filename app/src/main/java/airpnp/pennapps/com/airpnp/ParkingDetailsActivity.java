@@ -170,6 +170,11 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         tpd.show(getFragmentManager(), "Timepickerdialog");
     }
 
-    public void bookParking(View view) {
+    public void bookParking(View view)
+    {
+        String userEmail = getIntent().getStringExtra("user_email");
+        String ownerEmail = getIntent().getStringExtra("owner_email");
+        String startDate = arrivalStartDateBtn.getText().toString();
+        String endDate = arrivalEndDateBtn.getText().toString();
     }
 }
