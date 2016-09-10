@@ -15,6 +15,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +25,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class ParkingDetailsActivity extends AppCompatActivity {
@@ -44,7 +47,9 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         email=getIntent().getStringExtra("owner_email");
         getParkingDetails();
 
+        SimpleDateFormat sdfNOW = new SimpleDateFormat("MMM dd, yyyy");
         arrivalStartDateBtn = (Button) findViewById(R.id.btn_start_date);
+        arrivalStartDateBtn.setText(sdfNOW.format(new Date()));
         arrivalStartDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +64,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             }
         });
         arrivalEndDateBtn = (Button) findViewById(R.id.btn_end_date);
+        arrivalEndDateBtn.setText(sdfNOW.format(new Date()));
         arrivalEndDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,13 +129,21 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest1);
     }
 
-    public void setDate(boolean isArrival) {
+    public void setDate(final boolean isArrival) {
         Calendar now = Calendar.getInstance();
+
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                        Log.d("FUCK", year + " " + monthOfYear + " " + dayOfMonth);
+                        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+                        Calendar calendar = new GregorianCalendar(year,monthOfYear, dayOfMonth);
+                        if (isArrival) {
+                            arrivalStartDateBtn.setText(sdf.format(calendar.getTime()));
+                        } else {
+                            arrivalEndDateBtn.setText(sdf.format(calendar.getTime()));
+                        }
+
                     }
                 },
                 now.get(Calendar.YEAR),
@@ -140,7 +154,19 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     }
 
     public void setTime(boolean isArrival) {
+        Calendar now = Calendar.getInstance();
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
 
+                    }
+                },
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                false
+        );
+        tpd.show(getFragmentManager(), "Timepickerdialog");
     }
 
     public void bookParking(View view) {
