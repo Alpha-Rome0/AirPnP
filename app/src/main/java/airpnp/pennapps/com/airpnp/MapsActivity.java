@@ -20,11 +20,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -201,6 +199,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
         updateLocation();
         Location m_location=getLocation();
         LatLng latLng = new LatLng(m_location.getLatitude(), m_location.getLongitude());
@@ -221,7 +220,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     startIntentService(mLocation);
 
-                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
+//                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
                     for (Marker m : testMarkers) {
                         LatLng l = m.getPosition();
                         double d = haversine(mCenterLatLong.latitude, mCenterLatLong.longitude, l.latitude, l.longitude);
@@ -396,11 +395,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
-
-//            mLocationMarkerText.setText(getAddress(location.getLatitude(), location.getLongitude()));
             startIntentService(location);
 
 
