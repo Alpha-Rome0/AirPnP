@@ -3,7 +3,6 @@ package airpnp.pennapps.com.airpnp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class ParkingDetailsActivity extends AppCompatActivity {
@@ -32,8 +33,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parking_details);
-
-        email=getIntent().getStringExtra("email");
+        email=getIntent().getStringExtra("owner_email");
         getParkingDetails();
     }
 
@@ -49,24 +49,24 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 try
                 {
                     tempJSONArray = response.getJSONArray("data");
-                    for(int i=0;i<tempJSONArray.length();i++)
-                    {
-                        tempJSONObject=tempJSONArray.getJSONObject(i);
-                        String ownerFirstName=tempJSONObject.getString("firstname");
-                        String ownerLastName=tempJSONObject.getString("lastname");
-                        String hourlyRate=tempJSONObject.getString("rate");
-                        String phone=tempJSONObject.getString("phone");
+                    //Toast.makeText(ParkingDetailsActivity.this, "" + tempJSONArray.length(), Toast.LENGTH_LONG).show();
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                    String ownerFirstName=tempJSONObject.getString("firstname");
+                    String ownerLastName=tempJSONObject.getString("lastname");
+                    String hourlyRate=tempJSONObject.getString("rate");
+                    String phone=tempJSONObject.getString("phone");
+                    TextView textView1=(TextView)findViewById(R.id.tv_owner_name);
+                    TextView textView2=(TextView)findViewById(R.id.tv_phone);
+                    TextView textView3=(TextView)findViewById(R.id.tv_rate);
+                    TextView textView4=(TextView)findViewById(R.id.tv_rules);
+                    textView1.setText(ownerFirstName + " " + ownerLastName);
+                    textView2.setText(phone);
+                    textView3.setText("$" + hourlyRate + "/hr");
+                    textView4.setText("No Minivans please");
 
-//                        TextView textView1=(TextView)findViewById(R.id.textView2);
-//                        TextView textView2=(TextView)findViewById(R.id.textView2);
-//                        TextView textView3=(TextView)findViewById(R.id.textView3);
-//                        textView1.setText(ownerFirstName + " " + ownerLastName);
-//                        textView2.setText(hourlyRate);
-//
-//                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-//                        Date date=new Date();
-//                        textView3.setText(simpleDateFormat.format(date));
-                    }
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                    Date date=new Date();
+                    //textView3.setText(simpleDateFormat.format(date));
                 }
                 catch(JSONException e)
                 {
