@@ -11,6 +11,23 @@
     android:orientation="vertical"
     tools:context="airpnp.pennapps.com.airpnp.LoginActivity">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="36dp">
+
+        <TextView
+            android:id="@+id/welcome_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingRight="15dp"
+            android:text="AirPnP"
+            android:textColor="#fff"
+            android:textSize="70sp"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -44,7 +61,6 @@
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="#fff"/>
-
     </android.support.design.widget.TextInputLayout>
 
     <Button
