@@ -22,4 +22,10 @@
         <item name="colorControlHighlight">#fff</item>
     </style>
 
+    <!-- Map theme -->
+    <style name="AppTheme.Maps" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>

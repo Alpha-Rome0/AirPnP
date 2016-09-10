@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -18,8 +19,10 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -84,10 +87,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected String mAreaOutput;
     protected String mCityOutput;
     protected String mStateOutput;
-    EditText mLocationAddress;
-    TextView mLocationText;
 
-    Toolbar mToolbar;
+    CardView searchCard;
+    CardView bubbleCard;
+
+    TextView searchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,25 +105,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
 
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-        mLocationAddress = (EditText) findViewById(R.id.Address);
-        mLocationText = (TextView) findViewById(R.id.Locality);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-
-
-        mLocationText.setOnClickListener(new View.OnClickListener() {
+        searchText = (TextView) findViewById(R.id.search_text);
+        searchCard = (CardView) findViewById(R.id.search_card);
+        searchCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 openAutocompleteActivity();
-
             }
-
-
         });
+
+        bubbleCard = (CardView) findViewById(R.id.bubble_card);
+        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
+        //Change the text color when the user touches it
+        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
+                        break;
+                }
+                return false;
+            }
+        });
+
+
         mapFragment.getMapAsync(this);
         mResultReceiver = new AddressResultReceiver(new Handler());
 
@@ -175,20 +189,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng latLng = new LatLng(m_location.getLatitude(), m_location.getLongitude());
         CameraUpdate center = CameraUpdateFactory.newLatLngZoom(latLng, 10);
         mMap.moveCamera(center);
+        mMap.getUiSettings().setCompassEnabled(false);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 Log.d("Camera postion change" + "", cameraPosition + "");
                 mCenterLatLong = cameraPosition.target;
 
-
                 try {
-
                     Location mLocation = new Location("");
                     mLocation.setLatitude(mCenterLatLong.latitude);
                     mLocation.setLongitude(mCenterLatLong.longitude);
 
                     startIntentService(mLocation);
+
                     mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
                     for (Marker m : testMarkers) {
                         LatLng l = m.getPosition();
@@ -197,10 +212,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         else m.setVisible(false);
                     }
                     String addr = getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude);
-                    if (addr.equals("")) {
-                        mLocationMarkerText.setText("SET YOUR LOCATION");
-                    } else {
-                        mLocationMarkerText.setText(addr);
+                    if (!addr.equals("")) {
+                        searchText.setText(addr);
                     }
 
                 } catch (Exception e) {
@@ -321,7 +334,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             latLong = new LatLng(location.getLatitude(), location.getLongitude());
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLong).zoom(19f).tilt(70).build();
+                    .target(latLong).zoom(19f).build();
 
             try {
                 mMap.setMyLocationEnabled(true);
@@ -332,7 +345,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
 
-            mLocationMarkerText.setText(getAddress(location.getLatitude(), location.getLongitude()));
+//            mLocationMarkerText.setText(getAddress(location.getLatitude(), location.getLongitude()));
             startIntentService(location);
 
 
@@ -367,34 +380,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCityOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_STREET);
 
-            displayAddressOutput();
-
-            // Show a toast message if an address was found.
-            if (resultCode == AppUtils.LocationConstants.SUCCESS_RESULT) {
-                //  showToast(getString(R.string.address_found));
-
-
-            }
+//            if (resultCode == AppUtils.LocationConstants.SUCCESS_RESULT) {
+//;
+//            }
 
 
         }
 
-    }
-
-    /**
-     * Updates the address in the UI.
-     */
-    protected void displayAddressOutput() {
-        //  mLocationAddressTextView.setText(mAddressOutput);
-        try {
-            if (mAreaOutput != null)
-                // mLocationText.setText(mAreaOutput+ "");
-
-                mLocationAddress.setText(mAddressOutput);
-            //mLocationText.setText(mAreaOutput);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -461,10 +453,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 latLong = place.getLatLng();
 
-                //mLocationText.setText(place.getName() + "");
-
+                // Zoom to position
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLong).zoom(19f).tilt(70).build();
+
+                // Update Address field
+
+                searchText.setText(place.getAddress().toString());
+
                 //Log.d("!!!!!!",String.valueOf(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
                 try {
                     mMap.setMyLocationEnabled(true);
@@ -493,8 +489,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-                result.append(addresses.get(0).getAddressLine(0) + "\n");
-                result.append(address.getLocality());
+                result.append(addresses.get(0).getAddressLine(0));
+//                result.append(address.getLocality());
             }
         } catch (IOException e) {
             Log.e("tag", e.getMessage());

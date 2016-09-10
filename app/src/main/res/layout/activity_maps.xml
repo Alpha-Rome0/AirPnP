@@ -1,55 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    android:fitsSystemWindows="false">
 
-    <LinearLayout
-        android:id="@+id/container_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical">
-
-            <TextView android:gravity="center_vertical"
-                android:id="@+id/Locality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_btn_current_location"
-                android:drawablePadding="@dimen/list_row_padding"
-                android:ellipsize="end"
-                android:padding="10dp"
-                android:singleLine="true"
-                android:text="Click to change location"
-                android:textSize="@dimen/font_22" />
-
-            <EditText
-                android:id="@+id/Address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:ellipsize="end"
-                android:enabled="false"
-                android:hint="Address"
-                android:singleLine="true" />
-        </LinearLayout>
-    </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/container_toolbar">
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:id="@+id/search_card">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:id="@+id/search_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_my_location"
+                    android:drawablePadding="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:singleLine="true"
+                    android:text="Search here"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <fragment
             xmlns:tools="http://schemas.android.com/tools"
@@ -69,10 +60,14 @@
             android:orientation="vertical" >
 
             <android.support.v7.widget.CardView
+                android:id="@+id/bubble_card"
+                android:focusable="true"
+                android:clickable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
-                android:backgroundTint="#263238">
+                app:cardBackgroundColor="#EE37474F"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -86,7 +81,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="SET YOUR LOCATION"
+                        android:text="SET PARKING SPOT ⏎"
+                        android:textStyle="bold"
                         android:textColor="#fff" />
 
                 </LinearLayout>
@@ -95,9 +91,10 @@
 
             <ImageView
                 android:id="@+id/imageMarker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/add_marker" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/push_pin" />
+
         </LinearLayout>
 
 
@@ -105,4 +102,4 @@
     </FrameLayout>
 
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
