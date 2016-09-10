@@ -133,13 +133,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         cl = (CoordinatorLayout) findViewById(R.id.cl);
-        final Snackbar snackbar = Snackbar
-                .make(cl, "Use the pin to find parking spots near you", Snackbar.LENGTH_LONG)
-                .setAction("DISMISS", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    }
-                });
+        final Snackbar snackbar = Snackbar.make(cl, "Use PIN to find parking spots nearby", Snackbar.LENGTH_LONG);
         snackbar.show();
 
 //        bubbleCard = (CardView) findViewById(R.id.bubble_card);
