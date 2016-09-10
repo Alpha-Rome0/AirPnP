@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.v("facebook - profile", profile.getName());
                 }
                 // TODO GET FB DATA FOR NEXT ACTIVITY HERE!!
-//                System.out.println("WTF: "+ " --- "+loginResult.getAccessToken().getUserId() + " Token: " + loginResult.getAccessToken().getToken());
+//                System.out.println("FB: "+ " --- "+loginResult.getAccessToken().getUserId() + " Token: " + loginResult.getAccessToken().getToken());
             }
 
             @Override
@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Init conponents
+        // Init components
 
         final Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/ffs.ttf");
         final TextView tv = (TextView) findViewById(R.id.welcome_text);

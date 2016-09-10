@@ -42,7 +42,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.vision.text.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,6 +150,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(false);
+
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -480,8 +482,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) {
                 Address address = addresses.get(0);
-                result.append(addresses.get(0).getAddressLine(0) + "\n");
-                result.append(address.getLocality());
+                result.append(addresses.get(0).getAddressLine(0));
+//                result.append(address.getLocality());
             }
         } catch (IOException e) {
             Log.e("tag", e.getMessage());

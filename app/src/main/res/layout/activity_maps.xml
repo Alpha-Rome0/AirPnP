@@ -78,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="SET YOUR LOCATION"
+                        android:text="Set Your Location"
                         android:textColor="#fff" />
 
                 </LinearLayout>
@@ -87,9 +87,10 @@
 
             <ImageView
                 android:id="@+id/imageMarker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/add_marker" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/push_pin" />
+
         </LinearLayout>
 
 
