@@ -63,10 +63,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -105,6 +106,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private JSONObject tempJSONObject;
     private JSONArray tempJSONArray;
 
+    private HashMap<Marker, String> markerHashMap = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +132,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bubbleCard = (CardView) findViewById(R.id.bubble_card);
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
+
 
         mapFragment.getMapAsync(this);
         mResultReceiver = new AddressResultReceiver(new Handler());
@@ -179,7 +183,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         Log.d(TAG, "OnMapReady");
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
         updateLocation();
         m_Location = getLocation();
         LatLng latLng = new LatLng(m_Location.getLatitude(), m_Location.getLongitude());
@@ -201,7 +207,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mLocation.setLongitude(mCenterLatLong.longitude);
 
                     startIntentService(mLocation);
-
 
                     for (Marker m : testMarkers) {
                         LatLng l=m.getPosition();
@@ -227,26 +232,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String url = "http://li367-204.members.linode.com/listowners";
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
+
+            public void onResponse(JSONObject response)
+            {
+                List<String> emailList=new ArrayList<>();
+                try
+                {
                     tempJSONArray = response.getJSONArray("data");
                     for (int i = 0; i < tempJSONArray.length(); i++) {
                         tempJSONObject = tempJSONArray.getJSONObject(i);
                         double latitude = Double.parseDouble(tempJSONObject.getString("latitude"));
                         double longitude = Double.parseDouble(tempJSONObject.getString("longitude"));
                         testlatlng.add(new LatLng(latitude, longitude));
-                        Toast.makeText(MapsActivity.this, "" + latitude + " " + longitude, Toast.LENGTH_SHORT).show();
+                        String email=tempJSONObject.getString("email");
+                        emailList.add(email);
                     }
                 } catch (JSONException e) {
                     Toast.makeText(MapsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
+                int j=0;
                 for (LatLng i : testlatlng) {
-                    testMarkers.add(mMap.addMarker(new MarkerOptions()
+                    Marker marker=mMap.addMarker(new MarkerOptions()
                             .position(i)
                             .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
                             .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
                             .visible(false)
-                    ));
+                    );
+                    testMarkers.add(marker);
+                    markerHashMap.put(marker, emailList.get(j++));
                 }
             }
         },
@@ -354,11 +367,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//            mMap.getUiSettings().setMyLocationButtonEnabled(true);
             mMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
-
-//            mLocationMarkerText.setText(getAddress(location.getLatitude(), location.getLongitude()));
             startIntentService(location);
 
 
@@ -368,6 +379,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .show();
         }
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(MapsActivity.this, markerHashMap.get(marker).toString(), Toast.LENGTH_SHORT).show();
+        return true;
     }
 
 
