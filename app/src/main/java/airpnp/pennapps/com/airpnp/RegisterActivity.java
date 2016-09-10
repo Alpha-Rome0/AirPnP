@@ -25,6 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editText2;
     private EditText editText3;
     private EditText editText4;
+    private EditText editText5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +43,21 @@ public class RegisterActivity extends AppCompatActivity {
         editText2 = (EditText)findViewById(R.id.editText2);
         editText3 = (EditText)findViewById(R.id.editText3);
         editText4 = (EditText)findViewById(R.id.editText4);
+        editText5 = (EditText)findViewById(R.id.editText5);
 
         String firstName = editText1.getText().toString();
         String lastName = editText2.getText().toString();
         String email = editText3.getText().toString();
-        String password = editText4.getText().toString();
+        String phone = editText4.getText().toString();
+        String password = editText5.getText().toString();
 
-        registerUser(firstName, lastName, email, password);
+        registerUser(firstName, lastName, email, phone, password);
     }
 
-    public void registerUser(String firstName, String lastName, String email, String password)
+    public void registerUser(String firstName, String lastName, String email, String phone, String password)
     {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url1 = "http://li367-204.members.linode.com/register?firstname=" + firstName + "&lastname=" + lastName + "&email=" + email + "&password=" + password;
+        String url1 = "http://li367-204.members.linode.com/register?firstname=" + firstName + "&lastname=" + lastName + "&email=" + email + "&phone=" + phone + "&password=" + password;
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String)null, new Response.Listener<JSONObject>()
         {
             @Override

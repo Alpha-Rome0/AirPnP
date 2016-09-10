@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:hint="First Name"
             android:id="@+id/editText1"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="15dp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -50,31 +50,39 @@
             android:id="@+id/editText2"
             android:hint="Last Name"
             android:layout_below="@+id/editText1"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="15dp" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText3"
             android:hint="Email"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_below="@+id/editText2"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText4"
-            android:hint="Password"
-            android:layout_below="@+id/editText3"
-            android:layout_marginTop="20dp" />
+            android:hint="Mobile"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/editText3"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/editText5"
-            android:hint="Re-enter Password"
+            android:hint="Password"
             android:layout_below="@+id/editText4"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="15dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText6"
+            android:hint="Re-enter Password"
+            android:layout_below="@+id/editText5"
+            android:layout_marginTop="15dp" />
 
         <Button
             android:layout_width="match_parent"

@@ -236,6 +236,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onResponse(JSONObject response)
             {
                 List<String> emailList=new ArrayList<>();
+                List<String> hourlyRateList=new ArrayList<>();
                 try
                 {
                     tempJSONArray = response.getJSONArray("data");
@@ -246,6 +247,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         testlatlng.add(new LatLng(latitude, longitude));
                         String email=tempJSONObject.getString("email");
                         emailList.add(email);
+                        String hourlyRate=String.valueOf(tempJSONObject.getInt("rate"));
+                        hourlyRateList.add(hourlyRate);
                     }
                 } catch (JSONException e) {
                     Toast.makeText(MapsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -254,7 +257,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for (LatLng i : testlatlng) {
                     Marker marker=mMap.addMarker(new MarkerOptions()
                             .position(i)
-                            .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
+                            .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$" + hourlyRateList.get(j))))
                             .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
                             .visible(false)
                     );
@@ -383,7 +386,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(MapsActivity.this, markerHashMap.get(marker).toString(), Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(MapsActivity.this, ParkingDetailsActivity.class);
+        intent.putExtra("user_email", intent.getStringExtra("user_email"));
+        intent.putExtra("owner_email", markerHashMap.get(marker));
+        startActivity(intent);
         return true;
     }
 
@@ -485,7 +491,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // Zoom to position
                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(latLong).zoom(19f).tilt(70).build();
+                        .target(latLong).zoom(19f).build();
 
                 // Update Address field
 

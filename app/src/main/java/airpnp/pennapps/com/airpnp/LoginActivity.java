@@ -8,8 +8,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -20,6 +28,12 @@ import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -113,7 +127,44 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginAction(View view) {
-        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
-        startActivity(intent);
+        EditText editText1=(EditText)findViewById(R.id.email);
+        EditText editText2=(EditText)findViewById(R.id.password);
+        final String email=editText1.getText().toString();
+        String password=editText2.getText().toString();
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://li367-204.members.linode.com/login?email=" + email + "&password=" + password;
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    String status=response.getJSONArray("result").getJSONObject(0).getString("status");
+                    if(status.equals("1"))
+                    {
+                        Intent intent=new Intent(LoginActivity.this, MapsActivity.class);
+                        intent.putExtra("user_email", email);
+                        startActivity(intent);
+                    }
+                    else
+                        Toast.makeText(LoginActivity.this, "Invalid credentials. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+                catch(JSONException e)
+                {
+                    Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest1);
     }
 }
