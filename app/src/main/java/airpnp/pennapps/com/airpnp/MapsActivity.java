@@ -182,6 +182,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if(d<0.4)m.setVisible(true);
                         else m.setVisible(false);
                     }
+                    String addr = getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude);
+                    if (addr.equals("")) {
+                        mLocationMarkerText.setText("SET YOUR LOCATION");
+                    } else {
+                        mLocationMarkerText.setText(addr);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
