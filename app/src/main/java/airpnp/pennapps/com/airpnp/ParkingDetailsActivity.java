@@ -59,15 +59,16 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                         String ownerLastName=tempJSONObject.getString("lastname");
                         String hourlyRate=tempJSONObject.getString("rate");
                         String phone=tempJSONObject.getString("phone");
-                        TextView textView1=(TextView)findViewById(R.id.textView2);
-                        TextView textView2=(TextView)findViewById(R.id.textView2);
-                        TextView textView3=(TextView)findViewById(R.id.textView3);
-                        textView1.setText(ownerFirstName + " " + ownerLastName);
-                        textView2.setText(hourlyRate);
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                        Date date=new Date();
-                        textView3.setText(simpleDateFormat.format(date));
+//                        TextView textView1=(TextView)findViewById(R.id.textView2);
+//                        TextView textView2=(TextView)findViewById(R.id.textView2);
+//                        TextView textView3=(TextView)findViewById(R.id.textView3);
+//                        textView1.setText(ownerFirstName + " " + ownerLastName);
+//                        textView2.setText(hourlyRate);
+//
+//                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+//                        Date date=new Date();
+//                        textView3.setText(simpleDateFormat.format(date));
                     }
                 }
                 catch(JSONException e)
