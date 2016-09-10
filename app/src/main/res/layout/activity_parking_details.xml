@@ -191,7 +191,7 @@
             android:textColor="#FFF"
             android:id="@+id/btn_book"
             android:text="Reserve Your Spot"
-            android:onClick="button1_onClick" />
+            android:onClick="bookParking" />
 
     </LinearLayout>
 

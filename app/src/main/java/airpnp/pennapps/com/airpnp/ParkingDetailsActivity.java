@@ -3,6 +3,8 @@ package airpnp.pennapps.com.airpnp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,12 +31,23 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     private JSONObject tempJSONObject;
     private JSONArray tempJSONArray;
 
+    Button arrivalStartDateBtn;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parking_details);
         email=getIntent().getStringExtra("owner_email");
         getParkingDetails();
+
+        arrivalStartDateBtn = (Button) findViewById(R.id.btn_arrival_start_date);
+        arrivalStartDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDate(true);
+            }
+        });
     }
 
     public void getParkingDetails()
@@ -99,5 +112,8 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 now.get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(getFragmentManager(), "Datepickerdialog");
+    }
+
+    public void bookParking(View view) {
     }
 }
