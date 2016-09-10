@@ -47,48 +47,48 @@ public class LoginActivity extends AppCompatActivity {
 
         // Facebook
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
+//        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         textView = (AutoCompleteTextView) findViewById(R.id.email);
-        AppEventsLogger.activateApp(this);
-        callbackManager = CallbackManager.Factory.create();
+//        AppEventsLogger.activateApp(this);
+//        callbackManager = CallbackManager.Factory.create();
 
-        btnFBLogin = (LoginButton) findViewById(R.id.fb_login_button);
-        btnFBLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.v("SUCCESS", "YEP SUCCESS");
-                AccessToken accessToken = loginResult.getAccessToken();
-                Profile profile;
-                ProfileTracker mProfileTracker;
-                if (Profile.getCurrentProfile() == null) {
-                    mProfileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile oldProf, Profile newProf) {
-                            // profile2 is the new profile
-                            Log.v("facebook - profile", newProf.getName());
-                            Profile.setCurrentProfile(newProf);
-                        }
-                    };
-                    mProfileTracker.startTracking();
-                } else {
-                    profile = Profile.getCurrentProfile();
-                    Log.v("facebook - profile", profile.getName());
-                }
-                // TODO GET FB DATA FOR NEXT ACTIVITY HERE!!
-//                System.out.println("FB: "+ " --- "+loginResult.getAccessToken().getUserId() + " Token: " + loginResult.getAccessToken().getToken());
-            }
-
-            @Override
-            public void onCancel() {
-                System.out.println("WTF: Canceled");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                System.out.println("WTF: Error");
-            }
-        });
+//        btnFBLogin = (LoginButton) findViewById(R.id.fb_login_button);
+//        btnFBLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                Log.v("SUCCESS", "YEP SUCCESS");
+//                AccessToken accessToken = loginResult.getAccessToken();
+//                Profile profile;
+//                ProfileTracker mProfileTracker;
+//                if (Profile.getCurrentProfile() == null) {
+//                    mProfileTracker = new ProfileTracker() {
+//                        @Override
+//                        protected void onCurrentProfileChanged(Profile oldProf, Profile newProf) {
+//                            // profile2 is the new profile
+//                            Log.v("facebook - profile", newProf.getName());
+//                            Profile.setCurrentProfile(newProf);
+//                        }
+//                    };
+//                    mProfileTracker.startTracking();
+//                } else {
+//                    profile = Profile.getCurrentProfile();
+//                    Log.v("facebook - profile", profile.getName());
+//                }
+//                // TODO GET FB DATA FOR NEXT ACTIVITY HERE!!
+////                System.out.println("FB: "+ " --- "+loginResult.getAccessToken().getUserId() + " Token: " + loginResult.getAccessToken().getToken());
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                System.out.println("WTF: Canceled");
+//            }
+//
+//            @Override
+//            public void onError(FacebookException e) {
+//                System.out.println("WTF: Error");
+//            }
+//        });
 
         // Init components
 
