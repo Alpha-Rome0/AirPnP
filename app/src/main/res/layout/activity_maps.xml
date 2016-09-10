@@ -95,11 +95,6 @@
                 android:layout_height="48dp"
                 android:src="@drawable/push_pin" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="to packing"
-                android:onClick="displayParkingDetails"/>
 
         </LinearLayout>
 

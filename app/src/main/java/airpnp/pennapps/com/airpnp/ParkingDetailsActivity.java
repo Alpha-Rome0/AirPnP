@@ -1,7 +1,8 @@
 package airpnp.pennapps.com.airpnp;
 
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -26,8 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import java.util.GregorianCalendar;
-
 
 public class ParkingDetailsActivity extends AppCompatActivity {
 
@@ -39,6 +39,9 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     Button arrivalStartTimeBtn;
     Button arrivalEndDateBtn;
     Button arrivalEndTimeBtn;
+
+    String phone;
+    Button book;
 
     public Calendar startDate;
     public Calendar endDate;
@@ -58,6 +61,13 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         SimpleDateFormat sdfDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
         SimpleDateFormat sdfTimeFormatter = new SimpleDateFormat("h:mm a");
 
+        book=(Button)findViewById(R.id.btn_book);
+        book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bookParking(v);
+            }
+        });
         arrivalStartDateBtn = (Button) findViewById(R.id.btn_start_date);
         arrivalStartDateBtn.setText(sdfDateFormatter.format(startDate.getTime()));
         arrivalStartDateBtn.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +120,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     String ownerFirstName=tempJSONObject.getString("firstname");
                     String ownerLastName=tempJSONObject.getString("lastname");
                     String hourlyRate=tempJSONObject.getString("rate");
-                    String phone=tempJSONObject.getString("phone");
+                    phone=tempJSONObject.getString("phone");
                     TextView textView1=(TextView)findViewById(R.id.tv_owner_name);
                     TextView textView2=(TextView)findViewById(R.id.tv_phone);
                     TextView textView3=(TextView)findViewById(R.id.tv_rate);
@@ -213,5 +223,37 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     }
 
     public void bookParking(View view) {
+        RequestQueue queue = Volley.newRequestQueue(this);  // this = context
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("rest.nexmo.com")
+                .appendPath("sms")
+                .appendPath("json")
+                .appendQueryParameter("api_key", getString(R.string.nexmo_id))
+                .appendQueryParameter("api_secret", getString(R.string.nexmo_secret))
+                .appendQueryParameter("from","12675097486")
+                .appendQueryParameter("to",phone)
+                .appendQueryParameter("text","Someone booked your spot!");
+        String url = builder.build().toString();
+        Log.d("!!!",url);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        );
+        queue.add(postRequest);
     }
 }
