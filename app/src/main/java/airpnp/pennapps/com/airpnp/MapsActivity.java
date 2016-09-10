@@ -27,6 +27,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -50,6 +56,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -92,6 +102,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     TextView searchText;
 
+    private JSONObject tempJSONObject;
+    private JSONArray tempJSONArray;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,22 +129,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         bubbleCard = (CardView) findViewById(R.id.bubble_card);
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-        //Change the text color when the user touches it
-        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
-                        break;
-                }
-                return false;
-            }
-        });
-
 
         mapFragment.getMapAsync(this);
         mResultReceiver = new AddressResultReceiver(new Handler());
@@ -184,12 +181,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         updateLocation();
-        Location m_location=getLocation();
-        LatLng latLng = new LatLng(m_location.getLatitude(), m_location.getLongitude());
+        m_Location = getLocation();
+        LatLng latLng = new LatLng(m_Location.getLatitude(), m_Location.getLongitude());
         CameraUpdate center = CameraUpdateFactory.newLatLngZoom(latLng, 10);
         mMap.moveCamera(center);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -203,12 +202,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     startIntentService(mLocation);
 
-                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
+
                     for (Marker m : testMarkers) {
-                        LatLng l = m.getPosition();
-                        double d = haversine(mCenterLatLong.latitude, mCenterLatLong.longitude, l.latitude, l.longitude);
-                        if (d < 0.4) m.setVisible(true);
-                        else m.setVisible(false);
+                        LatLng l=m.getPosition();
+                        Object[] o={l,m};
+                        new LongOperation().execute(o);
                     }
                     String addr = getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude);
                     if (!addr.equals("")) {
@@ -221,20 +219,44 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        testlatlng.add(new LatLng(39.948891, -75.194438));
-        testlatlng.add(new LatLng(39.950204, -75.194074));
-        testlatlng.add(new LatLng(39.952509, -75.197745));
-        testlatlng.add(new LatLng(39.947865, -75.170997));
-        testlatlng.add(new LatLng(39.948558, -75.123054));
+        fetchOwners();
+    }
 
-        for (LatLng i : testlatlng) {
-            testMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .position(i)
-                    .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
-                    .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
-                    .visible(false)
-            ));
-        }
+    public void fetchOwners() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://li367-204.members.linode.com/listowners";
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    tempJSONArray = response.getJSONArray("data");
+                    for (int i = 0; i < tempJSONArray.length(); i++) {
+                        tempJSONObject = tempJSONArray.getJSONObject(i);
+                        double latitude = Double.parseDouble(tempJSONObject.getString("latitude"));
+                        double longitude = Double.parseDouble(tempJSONObject.getString("longitude"));
+                        testlatlng.add(new LatLng(latitude, longitude));
+                        Toast.makeText(MapsActivity.this, "" + latitude + " " + longitude, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(MapsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+                for (LatLng i : testlatlng) {
+                    testMarkers.add(mMap.addMarker(new MarkerOptions()
+                            .position(i)
+                            .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$5")))
+                            .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
+                            .visible(false)
+                    ));
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MapsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest1);
     }
 
     @Override
@@ -503,11 +525,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public Location getLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ) {
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-        m_LocationManager= (LocationManager) getSystemService(LOCATION_SERVICE);
+        m_LocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String bestProvider = m_LocationManager.getBestProvider(criteria, true);
         Location location = m_LocationManager.getLastKnownLocation(bestProvider);
@@ -543,33 +565,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private class LongOperation extends AsyncTask<String, Void, String> {
+    private class LongOperation extends AsyncTask<Object[], Void, Object[]> {
 
         @Override
-        protected String doInBackground(String... params) {
-            for (int i = 0; i < 5; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
-                }
-            }
-            return "Executed";
+        protected Object[] doInBackground(Object[]... o) {
+            LatLng l=(LatLng)o[0][0];
+            Marker m=(Marker)o[0][1];
+            double d = haversine(mCenterLatLong.latitude, mCenterLatLong.longitude, l.latitude, l.longitude);
+            Object[] result = {m,d};
+            return result;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            TextView txt = (TextView) findViewById(R.id.output);
-            txt.setText("Executed"); // txt.setText(result);
-            // might want to change "executed" for the returned string passed
-            // into onPostExecute() but that is upto you
+        protected void onPostExecute(Object[] result) {
+            double d=(Double)result[1];
+            Marker m=(Marker)result[0];
+            if (d < 0.4) m.setVisible(true);
+            else m.setVisible(false);
         }
 
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
 
         @Override
-        protected void onProgressUpdate(Void... values) {}
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 }
-}
+
