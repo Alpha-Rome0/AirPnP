@@ -3,11 +3,12 @@ package airpnp.pennapps.com.airpnp;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -23,6 +24,8 @@ import com.facebook.login.widget.LoginButton;
 
 public class LoginActivity extends AppCompatActivity {
 
+    AutoCompleteTextView textView;
+
     //    Facebook Login
     private LoginButton btnFBLogin;
     private CallbackManager callbackManager;
@@ -35,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-
+        textView = (AutoCompleteTextView) findViewById(R.id.email);
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
 
@@ -47,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 AccessToken accessToken = loginResult.getAccessToken();
                 Profile profile;
                 ProfileTracker mProfileTracker;
-                if(Profile.getCurrentProfile() == null) {
+                if (Profile.getCurrentProfile() == null) {
                     mProfileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProf, Profile newProf) {
@@ -109,11 +112,18 @@ public class LoginActivity extends AppCompatActivity {
                 final Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(intent);
             }
+
         });
+
     }
 
     public void loginAction(View view) {
-        Intent intent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent intent;
+        if (textView.getText().toString().equals("owner")) {
+            intent = new Intent(getApplicationContext(), OwnerActivity.class);
+        } else {
+            intent = new Intent(LoginActivity.this, MapsActivity.class);
+        }
         startActivity(intent);
     }
 }
