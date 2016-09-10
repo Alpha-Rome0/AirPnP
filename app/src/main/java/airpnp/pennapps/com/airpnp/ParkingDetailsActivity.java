@@ -56,7 +56,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         endDate = Calendar.getInstance();
 
         SimpleDateFormat sdfDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
-//        SimpleDateFormat sdfTimeFormatter = new SimpleDateFormat("HH:mm")
+        SimpleDateFormat sdfTimeFormatter = new SimpleDateFormat("h:mm a");
 
         arrivalStartDateBtn = (Button) findViewById(R.id.btn_start_date);
         arrivalStartDateBtn.setText(sdfDateFormatter.format(startDate.getTime()));
@@ -67,6 +67,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             }
         });
         arrivalStartTimeBtn = (Button) findViewById(R.id.btn_start_time);
+        arrivalStartTimeBtn.setText(sdfTimeFormatter.format(startDate.getTime()));
         arrivalStartTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +83,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             }
         });
         arrivalEndTimeBtn = (Button) findViewById(R.id.btn_end_time);
+        arrivalEndTimeBtn.setText(sdfTimeFormatter.format(endDate.getTime()));
         arrivalEndTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,18 +177,36 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
 
-    public void setTime(boolean isArrival) {
-        Calendar now = Calendar.getInstance();
+    public void setTime(final boolean isArrival) {
+        Calendar currCalendar;
+        if (isArrival) {
+            currCalendar = startDate;
+        } else {
+            currCalendar = endDate;
+        }
         TimePickerDialog tpd = TimePickerDialog.newInstance(
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("H:mm a");
-//                        Calendar calendar = new GregorianCalendar(2016,1,1, );
+                        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+                        // Set the new calendar times
+                        if (isArrival) {
+                            startDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            startDate.set(Calendar.MINUTE, minute);
+                            startDate.set(Calendar.SECOND, second);
+
+                            arrivalStartTimeBtn.setText(sdf.format(startDate.getTime()));
+                        } else {
+                            endDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            endDate.set(Calendar.MINUTE, minute);
+                            endDate.set(Calendar.SECOND, second);
+
+                            arrivalEndTimeBtn.setText(sdf.format(endDate.getTime()));
+                        }
                     }
                 },
-                now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
+                currCalendar.get(Calendar.HOUR_OF_DAY),
+                currCalendar.get(Calendar.MINUTE),
                 false
         );
         tpd.show(getFragmentManager(), "Timepickerdialog");
