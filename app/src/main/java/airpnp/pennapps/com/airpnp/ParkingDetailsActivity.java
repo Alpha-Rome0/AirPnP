@@ -40,6 +40,9 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     Button arrivalEndDateBtn;
     Button arrivalEndTimeBtn;
 
+    public Calendar startDate;
+    public Calendar endDate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +51,15 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         email=getIntent().getStringExtra("owner_email");
         getParkingDetails();
 
-        SimpleDateFormat sdfNOW = new SimpleDateFormat("MMM dd, yyyy");
+        // Setting initial calendar values
+        startDate = Calendar.getInstance();
+        endDate = Calendar.getInstance();
+
+        SimpleDateFormat sdfDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
+//        SimpleDateFormat sdfTimeFormatter = new SimpleDateFormat("HH:mm")
+
         arrivalStartDateBtn = (Button) findViewById(R.id.btn_start_date);
-        arrivalStartDateBtn.setText(sdfNOW.format(new Date()));
+        arrivalStartDateBtn.setText(sdfDateFormatter.format(startDate.getTime()));
         arrivalStartDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +74,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             }
         });
         arrivalEndDateBtn = (Button) findViewById(R.id.btn_end_date);
-        arrivalEndDateBtn.setText(sdfNOW.format(new Date()));
+        arrivalEndDateBtn.setText(sdfDateFormatter.format(endDate.getTime()));
         arrivalEndDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,25 +140,37 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     }
 
     public void setDate(final boolean isArrival) {
-        Calendar now = Calendar.getInstance();
-
+        Calendar currCalendar;
+        if (isArrival) {
+            currCalendar = startDate;
+        } else {
+            currCalendar = endDate;
+        }
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-                        Calendar calendar = new GregorianCalendar(year,monthOfYear, dayOfMonth);
+                        // Set the new calendar dates
                         if (isArrival) {
-                            arrivalStartDateBtn.setText(sdf.format(calendar.getTime()));
+                            startDate.set(Calendar.YEAR, year);
+                            startDate.set(Calendar.MONTH, monthOfYear);
+                            startDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                            arrivalStartDateBtn.setText(sdf.format(startDate.getTime()));
                         } else {
-                            arrivalEndDateBtn.setText(sdf.format(calendar.getTime()));
+                            endDate.set(Calendar.YEAR, year);
+                            endDate.set(Calendar.MONTH, monthOfYear);
+                            endDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                            arrivalEndDateBtn.setText(sdf.format(endDate.getTime()));
                         }
 
                     }
                 },
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)
+                currCalendar.get(Calendar.YEAR),
+                currCalendar.get(Calendar.MONTH),
+                currCalendar.get(Calendar.DAY_OF_MONTH)
         );
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
@@ -160,7 +181,8 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-
+                        SimpleDateFormat sdf = new SimpleDateFormat("H:mm a");
+//                        Calendar calendar = new GregorianCalendar(2016,1,1, );
                     }
                 },
                 now.get(Calendar.HOUR_OF_DAY),
