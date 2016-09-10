@@ -100,6 +100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
         mResultReceiver = new AddressResultReceiver(new Handler());
 
@@ -149,6 +150,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, "OnMapReady");
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(false);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -172,7 +174,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     String addr = getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude);
                     if (addr.equals("")) {
-                        mLocationMarkerText.setText("SET YOUR LOCATION");
+                        mLocationMarkerText.setText("Set Your Location");
                     } else {
                         mLocationMarkerText.setText(addr);
                     }

@@ -63,7 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
-                android:backgroundTint="#263238">
+                app:cardBackgroundColor="#EE37474F"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
