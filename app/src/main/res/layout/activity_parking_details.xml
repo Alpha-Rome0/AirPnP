@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#ECEFF1"
     android:orientation="vertical"
     tools:context="airpnp.pennapps.com.airpnp.ParkingDetailsActivity">
@@ -10,6 +11,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="4dp">
@@ -56,7 +58,8 @@
     <android.support.v7.widget.CardView
         android:layout_marginTop="4dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
