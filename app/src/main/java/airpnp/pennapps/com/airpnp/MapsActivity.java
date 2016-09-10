@@ -15,6 +15,7 @@ import android.os.ResultReceiver;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.text.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,10 +75,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected String mAreaOutput;
     protected String mCityOutput;
     protected String mStateOutput;
-    EditText mLocationAddress;
-    TextView mLocationText;
 
-    Toolbar mToolbar;
+    CardView searchCard;
+
+    TextView searchText;
 
 
     @Override
@@ -84,32 +86,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mContext = this;
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
 
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-        mLocationAddress = (EditText) findViewById(R.id.Address);
-        mLocationText = (TextView) findViewById(R.id.Locality);
 
-
-//        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//
-//        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-
-
-        mLocationText.setOnClickListener(new View.OnClickListener() {
+        searchText = (TextView) findViewById(R.id.search_text);
+        searchCard = (CardView) findViewById(R.id.search_card);
+        searchCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 openAutocompleteActivity();
-
             }
-
-
         });
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mResultReceiver = new AddressResultReceiver(new Handler());
 
@@ -454,15 +444,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 latLong = place.getLatLng();
 
-                //mLocationText.setText(place.getName() + "");
-
                 // Zoom to position
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLong).zoom(19f).tilt(70).build();
 
                 // Update Address field
 
-                mLocationAddress.setText(place.getAddress().toString());
+                searchText.setText(place.getAddress().toString());
 
                 //Log.d("!!!!!!",String.valueOf(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
                 try {
