@@ -20,10 +20,14 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Interval;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,7 +49,6 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
     public Calendar startDate;
     public Calendar endDate;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,7 +225,8 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         tpd.show(getFragmentManager(), "Timepickerdialog");
     }
 
-    public void bookParking(View view) {
+    public void bookParking(View view)
+    {
         RequestQueue queue = Volley.newRequestQueue(this);  // this = context
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
@@ -255,5 +259,43 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 }
         );
         queue.add(postRequest);
+        String userEmail=getIntent().getStringExtra("user_email");
+        String ownerEmail=getIntent().getStringExtra("owner_email");
+        //String startDate=arrivalStartDateBtn.getText().toString();
+        //String endDate=arrivalEndDateBtn.getText().toString();
+        String startTime=arrivalStartTimeBtn.getText().toString();
+        String endTime=arrivalEndTimeBtn.getText().toString();
+        SimpleDateFormat displayFormat=new SimpleDateFormat("HH:mm");
+        SimpleDateFormat parseFormat=new SimpleDateFormat("hh:mm a");
+
+        int startYear=startDate.get(Calendar.YEAR);
+        int startMonth=startDate.get(Calendar.MONTH);
+        int startDay=startDate.get(Calendar.DAY_OF_MONTH);
+
+        int endYear=endDate.get(Calendar.YEAR);
+        int endMonth=endDate.get(Calendar.MONTH);
+        int endDay=endDate.get(Calendar.DAY_OF_MONTH);
+
+        try
+        {
+            Date date=parseFormat.parse(startTime);
+            startTime=displayFormat.format(date);
+            date=parseFormat.parse(endTime);
+            endTime=displayFormat.format(date);
+            int startHour=Integer.parseInt(startTime.split(":")[0]);
+            int startMinute=Integer.parseInt(startTime.split(":")[1]);
+            int endHour=Integer.parseInt(endTime.split(":")[0]);
+            int endMinute=Integer.parseInt(endTime.split(":")[1]);
+
+            DateTime dateTime1 = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0);
+            DateTime dateTime2 = new DateTime(endYear, endMonth, endDay, endHour, endMinute, 0);
+            Interval interval = new Interval(dateTime1, dateTime2);
+            Duration duration = interval.toDuration();
+            long hours=duration.getStandardHours();
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 }
