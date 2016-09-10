@@ -37,24 +37,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Facebook
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
-
-        // Add code to print out the key hash
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "your.package",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }
 
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
@@ -94,6 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println("WTF: Error");
             }
         });
+
+        // Init conponents
 
         final Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/ffs.ttf");
         final TextView tv = (TextView) findViewById(R.id.welcome_text);

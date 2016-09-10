@@ -91,15 +91,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
         mLocationAddress = (EditText) findViewById(R.id.Address);
         mLocationText = (TextView) findViewById(R.id.Locality);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
 
 
-
-
+//        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mToolbar);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//
+//        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
 
 
         mLocationText.setOnClickListener(new View.OnClickListener() {
@@ -383,13 +381,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCityOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_STREET);
 
-            displayAddressOutput();
-
             // Show a toast message if an address was found.
             if (resultCode == AppUtils.LocationConstants.SUCCESS_RESULT) {
                 //  showToast(getString(R.string.address_found));
-
-
+//                displayAddressOutput();
             }
 
 
@@ -400,13 +395,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Updates the address in the UI.
      */
-    protected void displayAddressOutput() {
+    protected void displayAddressOutput(String place) {
+        Log.d("ADDR", "ADDR IS: " + mAddressOutput);
         //  mLocationAddressTextView.setText(mAddressOutput);
         try {
-            if (mAreaOutput != null)
+
                 // mLocationText.setText(mAreaOutput+ "");
 
-                mLocationAddress.setText(mAddressOutput);
+                mLocationAddress.setText(place);
             //mLocationText.setText(mAreaOutput);
         } catch (Exception e) {
             e.printStackTrace();
@@ -481,6 +477,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLong).zoom(19f).tilt(70).build();
+
+                displayAddressOutput(place.getAddress().toString());
+
                 //Log.d("!!!!!!",String.valueOf(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
                 try {
                     mMap.setMyLocationEnabled(true);
