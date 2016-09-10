@@ -37,44 +37,76 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp" >
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="First Name"
-            android:id="@+id/editText1"
-            android:layout_marginTop="30dp" />
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="First Name"
+                android:id="@+id/editText1"
+                android:layout_marginTop="15dp" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText2"
-            android:hint="Last Name"
-            android:layout_below="@+id/editText1"
-            android:layout_marginTop="20dp" />
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText2"
+                android:hint="Last Name"
+                android:layout_below="@+id/editText1"
+                android:layout_marginTop="15dp" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText3"
-            android:hint="Email"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/editText2"/>
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText3"
+                android:hint="Email"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/editText2"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText4"
-            android:hint="Password"
-            android:layout_below="@+id/editText3"
-            android:layout_marginTop="20dp" />
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText4"
+                android:hint="Mobile"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/editText3"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/editText5"
-            android:hint="Re-enter Password"
-            android:layout_below="@+id/editText4"
-            android:layout_marginTop="20dp" />
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText5"
+                android:hint="Password"
+                android:layout_below="@+id/editText4"
+                android:layout_marginTop="15dp" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText6"
+                android:hint="Re-enter Password"
+                android:layout_below="@+id/editText5"
+                android:layout_marginTop="15dp" />
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:layout_width="match_parent"
