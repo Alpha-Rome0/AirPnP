@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
                         android:gravity="center"
-                        android:text="SET DESTINATION AREA ⏎"
+                        android:text="Set Destination Area ⏎"
                         android:textColor="#fff" />
 
                 </LinearLayout>
@@ -97,9 +97,6 @@
 
         </LinearLayout>
 
-
-
     </FrameLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>
