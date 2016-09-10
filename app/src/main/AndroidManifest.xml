@@ -16,6 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- Facebook -->
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
