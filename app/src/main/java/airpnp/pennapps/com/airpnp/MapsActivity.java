@@ -329,7 +329,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             latLong = new LatLng(location.getLatitude(), location.getLongitude());
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLong).zoom(19f).tilt(70).build();
+                    .target(latLong).zoom(19f).build();
 
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
