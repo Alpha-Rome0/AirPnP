@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:onClick="loginAction"
             android:layout_marginTop="36dp"
-            android:text="Login"
+            android:text="Sign In"
             android:textStyle="bold" />
 
         <TextView android:id="@+id/signup_link"
