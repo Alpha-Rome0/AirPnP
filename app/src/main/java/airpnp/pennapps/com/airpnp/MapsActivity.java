@@ -165,7 +165,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mLocation.setLongitude(mCenterLatLong.longitude);
 
                     startIntentService(mLocation);
-                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
+//                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
                     for(Marker m:testMarkers){
                         LatLng l=m.getPosition();
                         double d=haversine(mCenterLatLong.latitude,mCenterLatLong.longitude,l.latitude,l.longitude);
@@ -173,10 +173,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         else m.setVisible(false);
                     }
                     String addr = getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude);
-                    if (addr.equals("")) {
-                        mLocationMarkerText.setText("Set Your Location");
-                    } else {
-                        mLocationMarkerText.setText(addr);
+                    if (!addr.equals("")) {
+                        searchText.setText(addr);
                     }
 
                 } catch (Exception e) {
@@ -338,7 +336,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
 
-            mLocationMarkerText.setText(getAddress(location.getLatitude(), location.getLongitude()));
+//            mLocationMarkerText.setText(getAddress(location.getLatitude(), location.getLongitude()));
             startIntentService(location);
 
 

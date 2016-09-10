@@ -78,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Set Your Location"
+                        android:text="SET PARKING SPOT ⏎"
                         android:textColor="#fff" />
 
                 </LinearLayout>
