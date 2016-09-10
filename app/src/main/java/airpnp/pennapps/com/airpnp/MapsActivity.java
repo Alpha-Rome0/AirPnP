@@ -166,7 +166,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mLocation.setLongitude(mCenterLatLong.longitude);
 
                     startIntentService(mLocation);
-                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
+                    String addr = getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude);
+                    if (addr.equals("")) {
+                        mLocationMarkerText.setText("SET YOUR LOCATION");
+                    } else {
+                        mLocationMarkerText.setText(addr);
+                    }
+//                    mLocationMarkerText.setText(getAddress(mCenterLatLong.latitude, mCenterLatLong.longitude));
 
                 } catch (Exception e) {
                     e.printStackTrace();
