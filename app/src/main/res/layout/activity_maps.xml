@@ -60,6 +60,9 @@
             android:orientation="vertical" >
 
             <android.support.v7.widget.CardView
+                android:id="@+id/bubble_card"
+                android:focusable="true"
+                android:clickable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
@@ -79,6 +82,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="SET PARKING SPOT ⏎"
+                        android:textStyle="bold"
                         android:textColor="#fff" />
 
                 </LinearLayout>

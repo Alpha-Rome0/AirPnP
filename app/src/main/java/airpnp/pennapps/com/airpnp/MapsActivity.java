@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -76,6 +78,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected String mStateOutput;
 
     CardView searchCard;
+    CardView bubbleCard;
 
     TextView searchText;
 
@@ -86,14 +89,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         mContext = this;
 
-        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-
         searchText = (TextView) findViewById(R.id.search_text);
         searchCard = (CardView) findViewById(R.id.search_card);
         searchCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openAutocompleteActivity();
+            }
+        });
+
+        bubbleCard = (CardView) findViewById(R.id.bubble_card);
+        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
+        //Change the text color when the user touches it
+        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
+                        break;
+                }
+                return false;
             }
         });
 
