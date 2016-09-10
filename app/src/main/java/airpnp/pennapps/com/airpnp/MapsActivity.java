@@ -381,34 +381,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mCityOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_CITY);
             mStateOutput = resultData.getString(AppUtils.LocationConstants.LOCATION_DATA_STREET);
 
-            // Show a toast message if an address was found.
             if (resultCode == AppUtils.LocationConstants.SUCCESS_RESULT) {
-                //  showToast(getString(R.string.address_found));
-//                displayAddressOutput();
+;
             }
 
 
         }
 
     }
-
-    /**
-     * Updates the address in the UI.
-     */
-    protected void displayAddressOutput(String place) {
-        Log.d("ADDR", "ADDR IS: " + mAddressOutput);
-        //  mLocationAddressTextView.setText(mAddressOutput);
-        try {
-
-                // mLocationText.setText(mAreaOutput+ "");
-
-                mLocationAddress.setText(place);
-            //mLocationText.setText(mAreaOutput);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     /**
      * Creates an intent, adds location data to it as an extra, and starts the intent service for
      * fetching an address.
@@ -475,10 +456,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 //mLocationText.setText(place.getName() + "");
 
+                // Zoom to position
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(latLong).zoom(19f).tilt(70).build();
 
-                displayAddressOutput(place.getAddress().toString());
+                // Update Address field
+
+                mLocationAddress.setText(place.getAddress().toString());
 
                 //Log.d("!!!!!!",String.valueOf(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
                 try {
