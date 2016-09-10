@@ -33,9 +33,6 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class LoginActivity extends AppCompatActivity {
 
     AutoCompleteTextView textView;
