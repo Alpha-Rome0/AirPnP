@@ -41,12 +41,12 @@
                     android:id="@+id/tv_house_name"
                     android:textStyle="bold"
                     android:textSize="32dp"
-                    android:text="33 Chestnut St"/>
+                    android:text="# House Name"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_house_addr"
-                    android:text="Pennsylvannia, PA"/>
+                    android:text="# House Address"/>
             </LinearLayout>
         </LinearLayout>
 

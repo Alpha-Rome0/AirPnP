@@ -446,11 +446,14 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 Double b=new Double(hourlyRate);
                 int x=b.intValue();
                 int cost=a*x;
-                Intent intent=new Intent();
-                intent.putExtra("hours", a);
-                intent.putExtra("hourlyRate", hourlyRate);
+                Intent intent=new Intent(ParkingDetailsActivity.this, PaymentActivity.class);
+                intent.putExtra("cost", a);
+                intent.putExtra("ownerEmail", ownerEmail);
+                intent.putExtra("userEmail", userEmail);
                 intent.putExtra("ownerAccountId", ownerAccountId);
                 intent.putExtra("userAccountId", userAccountId);
+                intent.putExtra("cost", cost);
+                intent.putExtra("hours", (int)hours);
                 startActivity(intent);
             }
 
