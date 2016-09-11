@@ -1,5 +1,6 @@
 package airpnp.pennapps.com.airpnp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -240,6 +240,11 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 .appendQueryParameter("text","Someone booked your spot!");
         String url = builder.build().toString();
         Log.d("!!!",url);
+
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr=20.5666,45.345"));
+        startActivity(intent);
+
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
@@ -259,6 +264,42 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 }
         );
         queue.add(postRequest);
+
+
+        String url2 = "http://li367-204.members.linode.com/getlatlng?email=" + email;
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url2, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    tempJSONArray = response.getJSONArray("result");
+                    //Toast.makeText(ParkingDetailsActivity.this, "" + tempJSONArray.length(), Toast.LENGTH_LONG).show();
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                    String lat=tempJSONObject.getString("lat");
+                    String lng=tempJSONObject.getString("lng");
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?daddr="+lat+","+lng));
+                    startActivity(intent);
+                }
+                catch(JSONException e)
+                {
+                    Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest1);
+
+
         String userEmail=getIntent().getStringExtra("user_email");
         String ownerEmail=getIntent().getStringExtra("owner_email");
         //String startDate=arrivalStartDateBtn.getText().toString();
