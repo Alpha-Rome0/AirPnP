@@ -3,10 +3,13 @@ package airpnp.pennapps.com.airpnp;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,6 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String zip;
 
     private Switch ownerRegister;
+    private TextInputLayout textWrapperComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,19 @@ public class RegisterActivity extends AppCompatActivity {
         final TextView tv = (TextView) findViewById(R.id.register_text);
         tv.setTypeface(tf);
 
-//        ownerRegister = (Switch)
+        textWrapperComments = (TextInputLayout) findViewById(R.id.text_wrapper_comments);
+
+        ownerRegister = (Switch) findViewById(R.id.admin_lock_switch);
+        ownerRegister.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
+                if (bChecked) {
+                    textWrapperComments.setVisibility(View.VISIBLE);
+                } else {
+                    textWrapperComments.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     public void button1_onClick(View v)
