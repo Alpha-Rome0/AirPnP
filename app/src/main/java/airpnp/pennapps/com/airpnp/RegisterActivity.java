@@ -42,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editText7;
     private EditText editText8;
     private EditText editText9;
+    private EditText editText10;
 
     private String firstName;
     private String lastName;
@@ -53,7 +54,9 @@ public class RegisterActivity extends AppCompatActivity {
     private String state;
     private String zip;
 
+    private String ownerRemarks;
     private Switch ownerRegister;
+    private boolean isDoingOwnerRegistration;
     private TextInputLayout textWrapperComments;
 
     @Override
@@ -91,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
         editText7=(EditText)findViewById(R.id.editText8);
         editText8=(EditText)findViewById(R.id.editText9);
         editText9=(EditText)findViewById(R.id.editText10);
+        editText10=(EditText)findViewById(R.id.owner_remarks);
 
         firstName=editText1.getText().toString();
         lastName=editText2.getText().toString();
@@ -101,6 +105,9 @@ public class RegisterActivity extends AppCompatActivity {
         city=editText7.getText().toString();
         state=editText8.getText().toString();
         zip=editText9.getText().toString();
+
+        ownerRemarks = editText10.getText().toString();
+        isDoingOwnerRegistration = ownerRegister.isChecked();
 
         registerUser(firstName, lastName, email, phone, password, streetAddress, city, state, zip);
     }
