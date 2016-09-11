@@ -1,7 +1,9 @@
 package airpnp.pennapps.com.airpnp;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -25,12 +28,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import java.util.GregorianCalendar;
 
 
 public class ParkingDetailsActivity extends AppCompatActivity {
@@ -43,6 +43,9 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     Button arrivalStartTimeBtn;
     Button arrivalEndDateBtn;
     Button arrivalEndTimeBtn;
+
+    String phone;
+    Button book;
 
     public Calendar startDate;
     public Calendar endDate;
@@ -61,6 +64,13 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         SimpleDateFormat sdfDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
         SimpleDateFormat sdfTimeFormatter = new SimpleDateFormat("h:mm a");
 
+        book=(Button)findViewById(R.id.btn_book);
+        book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bookParking(v);
+            }
+        });
         arrivalStartDateBtn = (Button) findViewById(R.id.btn_start_date);
         arrivalStartDateBtn.setText(sdfDateFormatter.format(startDate.getTime()));
         arrivalStartDateBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +123,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     String ownerFirstName=tempJSONObject.getString("firstname");
                     String ownerLastName=tempJSONObject.getString("lastname");
                     String hourlyRate=tempJSONObject.getString("rate");
-                    String phone=tempJSONObject.getString("phone");
+                    phone=tempJSONObject.getString("phone");
                     TextView textView1=(TextView)findViewById(R.id.tv_owner_name);
                     TextView textView2=(TextView)findViewById(R.id.tv_phone);
                     TextView textView3=(TextView)findViewById(R.id.tv_rate);
@@ -217,6 +227,79 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
     public void bookParking(View view)
     {
+        RequestQueue queue = Volley.newRequestQueue(this);  // this = context
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("rest.nexmo.com")
+                .appendPath("sms")
+                .appendPath("json")
+                .appendQueryParameter("api_key", getString(R.string.nexmo_id))
+                .appendQueryParameter("api_secret", getString(R.string.nexmo_secret))
+                .appendQueryParameter("from","12675097486")
+                .appendQueryParameter("to",phone)
+                .appendQueryParameter("text","Someone booked your spot!");
+        String url = builder.build().toString();
+        Log.d("!!!",url);
+
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?daddr=20.5666,45.345"));
+        startActivity(intent);
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", error.toString());
+                    }
+                }
+        );
+        queue.add(postRequest);
+
+
+        String url2 = "http://li367-204.members.linode.com/getlatlng?email=" + email;
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url2, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    tempJSONArray = response.getJSONArray("result");
+                    //Toast.makeText(ParkingDetailsActivity.this, "" + tempJSONArray.length(), Toast.LENGTH_LONG).show();
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                    String lat=tempJSONObject.getString("lat");
+                    String lng=tempJSONObject.getString("lng");
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?daddr="+lat+","+lng));
+                    startActivity(intent);
+                }
+                catch(JSONException e)
+                {
+                    Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest1);
+
+
         String userEmail=getIntent().getStringExtra("user_email");
         String ownerEmail=getIntent().getStringExtra("owner_email");
         //String startDate=arrivalStartDateBtn.getText().toString();
