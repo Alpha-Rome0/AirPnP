@@ -45,6 +45,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     Button arrivalEndTimeBtn;
 
     String phone;
+    String userEmail;
     Button book;
 
     public Calendar startDate;
@@ -54,17 +55,19 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parking_details);
-        email=getIntent().getStringExtra("owner_email");
+        email = getIntent().getStringExtra("owner_email");
         getParkingDetails();
 
         // Setting initial calendar values
         startDate = Calendar.getInstance();
         endDate = Calendar.getInstance();
 
+        userEmail = getIntent().getStringExtra("user_email");
+
         SimpleDateFormat sdfDateFormatter = new SimpleDateFormat("MMM dd, yyyy");
         SimpleDateFormat sdfTimeFormatter = new SimpleDateFormat("h:mm a");
 
-        book=(Button)findViewById(R.id.btn_book);
+        book = (Button) findViewById(R.id.btn_book);
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,45 +109,37 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
     }
 
-    public void getParkingDetails()
-    {
+    public void getParkingDetails() {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://li367-204.members.linode.com/getparkingdetails?email=" + email;
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()
-        {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONObject response)
-            {
-                try
-                {
+            public void onResponse(JSONObject response) {
+                try {
                     tempJSONArray = response.getJSONArray("data");
                     //Toast.makeText(ParkingDetailsActivity.this, "" + tempJSONArray.length(), Toast.LENGTH_LONG).show();
-                    tempJSONObject=tempJSONArray.getJSONObject(0);
-                    String ownerFirstName=tempJSONObject.getString("firstname");
-                    String ownerLastName=tempJSONObject.getString("lastname");
-                    String hourlyRate=tempJSONObject.getString("rate");
-                    phone=tempJSONObject.getString("phone");
-                    TextView textView1=(TextView)findViewById(R.id.tv_owner_name);
-                    TextView textView2=(TextView)findViewById(R.id.tv_phone);
-                    TextView textView3=(TextView)findViewById(R.id.tv_rate);
-                    TextView textView4=(TextView)findViewById(R.id.tv_rules);
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    String ownerFirstName = tempJSONObject.getString("firstname");
+                    String ownerLastName = tempJSONObject.getString("lastname");
+                    String hourlyRate = tempJSONObject.getString("rate");
+                    phone = tempJSONObject.getString("phone");
+                    TextView textView1 = (TextView) findViewById(R.id.tv_owner_name);
+                    TextView textView2 = (TextView) findViewById(R.id.tv_phone);
+                    TextView textView3 = (TextView) findViewById(R.id.tv_rate);
+                    TextView textView4 = (TextView) findViewById(R.id.tv_rules);
                     textView1.setText("Name: " + ownerFirstName + " " + ownerLastName);
                     textView2.setText("Contact: " + phone);
                     textView3.setText("Rate: $" + hourlyRate + " / hr");
                     textView4.setText("Remarks: No Minivans please");
 
-                }
-                catch(JSONException e)
-                {
+                } catch (JSONException e) {
                     Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
+                    public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -222,8 +217,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         tpd.show(getFragmentManager(), "Timepickerdialog");
     }
 
-    public void bookParking(View view)
-    {
+    public void bookParking(View view) {
         RequestQueue queue = Volley.newRequestQueue(this);  // this = context
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
@@ -232,27 +226,21 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 .appendPath("json")
                 .appendQueryParameter("api_key", getString(R.string.nexmo_id))
                 .appendQueryParameter("api_secret", getString(R.string.nexmo_secret))
-                .appendQueryParameter("from","12675097486")
-                .appendQueryParameter("to",phone)
-                .appendQueryParameter("text","Someone booked your spot!");
+                .appendQueryParameter("from", "12675097486")
+                .appendQueryParameter("to", phone)
+                .appendQueryParameter("text", "Hi! This is AirPnP notifying you that " + userEmail + " booked your spot!");
         String url = builder.build().toString();
-        Log.d("!!!",url);
-
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                Uri.parse("http://maps.google.com/maps?daddr=20.5666,45.345"));
-        startActivity(intent);
+        Log.d("!!!", url);
 
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
@@ -264,76 +252,67 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
 
         String url2 = "http://li367-204.members.linode.com/getlatlng?email=" + email;
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url2, (String)null, new Response.Listener<JSONObject>()
-        {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url2, (String) null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONObject response)
-            {
-                try
-                {
+            public void onResponse(JSONObject response) {
+                try {
                     tempJSONArray = response.getJSONArray("result");
                     //Toast.makeText(ParkingDetailsActivity.this, "" + tempJSONArray.length(), Toast.LENGTH_LONG).show();
-                    tempJSONObject=tempJSONArray.getJSONObject(0);
-                    String lat=tempJSONObject.getString("lat");
-                    String lng=tempJSONObject.getString("lng");
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    String lat = tempJSONObject.getString("lat");
+                    String lng = tempJSONObject.getString("lng");
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                            Uri.parse("http://maps.google.com/maps?daddr="+lat+","+lng));
+                            Uri.parse("http://maps.google.com/maps?daddr=" + lat + "," + lng));
                     startActivity(intent);
-                }
-                catch(JSONException e)
-                {
+                } catch (JSONException e) {
                     Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
+                    public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
         queue.add(jsonObjectRequest1);
-        String userEmail=getIntent().getStringExtra("user_email");
-        String ownerEmail=getIntent().getStringExtra("owner_email");
+
+        String ownerEmail = getIntent().getStringExtra("owner_email");
         MyApplication.markerHashMap.get(ownerEmail).remove();
         MyApplication.markerHashMap.remove(ownerEmail);
         //String startDate=arrivalStartDateBtn.getText().toString();
         //String endDate=arrivalEndDateBtn.getText().toString();
-        String startTime=arrivalStartTimeBtn.getText().toString();
-        String endTime=arrivalEndTimeBtn.getText().toString();
-        SimpleDateFormat displayFormat=new SimpleDateFormat("HH:mm");
-        SimpleDateFormat parseFormat=new SimpleDateFormat("hh:mm a");
+        String startTime = arrivalStartTimeBtn.getText().toString();
+        String endTime = arrivalEndTimeBtn.getText().toString();
+        SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat parseFormat = new SimpleDateFormat("hh:mm a");
 
-        int startYear=startDate.get(Calendar.YEAR);
-        int startMonth=startDate.get(Calendar.MONTH);
-        int startDay=startDate.get(Calendar.DAY_OF_MONTH);
+        int startYear = startDate.get(Calendar.YEAR);
+        int startMonth = startDate.get(Calendar.MONTH);
+        int startDay = startDate.get(Calendar.DAY_OF_MONTH);
 
-        int endYear=endDate.get(Calendar.YEAR);
-        int endMonth=endDate.get(Calendar.MONTH);
-        int endDay=endDate.get(Calendar.DAY_OF_MONTH);
+        int endYear = endDate.get(Calendar.YEAR);
+        int endMonth = endDate.get(Calendar.MONTH);
+        int endDay = endDate.get(Calendar.DAY_OF_MONTH);
 
-        try
-        {
-            Date date=parseFormat.parse(startTime);
-            startTime=displayFormat.format(date);
-            date=parseFormat.parse(endTime);
-            endTime=displayFormat.format(date);
-            int startHour=Integer.parseInt(startTime.split(":")[0]);
-            int startMinute=Integer.parseInt(startTime.split(":")[1]);
-            int endHour=Integer.parseInt(endTime.split(":")[0]);
-            int endMinute=Integer.parseInt(endTime.split(":")[1]);
+        try {
+            Date date = parseFormat.parse(startTime);
+            startTime = displayFormat.format(date);
+            date = parseFormat.parse(endTime);
+            endTime = displayFormat.format(date);
+            int startHour = Integer.parseInt(startTime.split(":")[0]);
+            int startMinute = Integer.parseInt(startTime.split(":")[1]);
+            int endHour = Integer.parseInt(endTime.split(":")[0]);
+            int endMinute = Integer.parseInt(endTime.split(":")[1]);
 
             DateTime dateTime1 = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0);
             DateTime dateTime2 = new DateTime(endYear, endMonth, endDay, endHour, endMinute, 0);
             Interval interval = new Interval(dateTime1, dateTime2);
             Duration duration = interval.toDuration();
-            long hours=duration.getStandardHours();
-        }
-        catch (Exception e)
-        {
+            long hours = duration.getStandardHours();
+        } catch (Exception e) {
             Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
+        finish();
     }
 }
