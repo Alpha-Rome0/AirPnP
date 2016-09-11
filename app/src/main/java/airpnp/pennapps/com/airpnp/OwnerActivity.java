@@ -24,8 +24,10 @@ public class OwnerActivity extends AppCompatActivity {
         ownersText.setTypeface(tf);
 
         ArrayList<String> reviews=new ArrayList();
-        reviews.add("User1 - Review: 5 Stars");
-        reviews.add("User2 - Review: 4 Stars");
+        reviews.add("AdviceTagz - Review: 5 Stars");
+        reviews.add("DatasTech - Review: 4 Stars");
+        reviews.add("InstantRoys - Review: 1 Stars");
+        reviews.add("LessGenius - Review: 3 Stars");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, reviews);
