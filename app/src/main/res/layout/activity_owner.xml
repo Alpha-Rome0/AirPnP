@@ -8,15 +8,18 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:background="@color/colorAlternate2"
     tools:context="airpnp.pennapps.com.airpnp.OwnerActivity">
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/owner_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Owner Management"
-        android:id="@+id/textView"
+        android:gravity="center"
+        android:text="For Owners"
+        android:textColor="#fff"
+        android:textSize="60sp"
         android:layout_gravity="center_horizontal" />
 
     <android.support.design.widget.TextInputLayout
@@ -40,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <EditText
             android:id="@+id/details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,10 +87,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="?android:textAppearanceSmall"
         android:text="Submit"
         android:id="@+id/button"
+        android:textStyle="bold"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>
