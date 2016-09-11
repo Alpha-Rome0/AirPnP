@@ -303,8 +303,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
 
         String ownerEmail = getIntent().getStringExtra("owner_email");
-        MyApplication.markerHashMap.get(ownerEmail).remove();
-        MyApplication.markerHashMap.remove(ownerEmail);
+
         //String startDate=arrivalStartDateBtn.getText().toString();
         //String endDate=arrivalEndDateBtn.getText().toString();
         String startTime = arrivalStartTimeBtn.getText().toString();
