@@ -408,7 +408,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         Intent intent=new Intent(MapsActivity.this, ParkingDetailsActivity.class);
-        intent.putExtra("user_email", intent.getStringExtra("user_email"));
+        intent.putExtra("user_email", getIntent().getStringExtra("user_email"));
         intent.putExtra("owner_email", markerHashMap.get(marker));
         startActivity(intent);
         return true;

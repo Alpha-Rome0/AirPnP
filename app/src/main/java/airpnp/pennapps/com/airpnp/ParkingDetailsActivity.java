@@ -35,7 +35,6 @@ import java.util.Date;
 
 public class ParkingDetailsActivity extends AppCompatActivity {
 
-    private String email;
     private JSONObject tempJSONObject;
     private JSONArray tempJSONArray;
 
@@ -50,11 +49,20 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     public Calendar startDate;
     public Calendar endDate;
 
+    private long hours;
+
+    private String userCustomerId;
+    private String ownerCustomerId;
+    private String userEmail;
+    private String ownerEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parking_details);
-        email=getIntent().getStringExtra("owner_email");
+        userEmail=getIntent().getStringExtra("user_email");
+        ownerEmail=getIntent().getStringExtra("owner_email");
+        getCustomerKey();
         getParkingDetails();
 
         // Setting initial calendar values
@@ -109,7 +117,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     public void getParkingDetails()
     {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://li367-204.members.linode.com/getparkingdetails?email=" + email;
+        String url = "http://li367-204.members.linode.com/getparkingdetails?email=" + ownerEmail;
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()
         {
             @Override
@@ -263,7 +271,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         queue.add(postRequest);
 
 
-        String url2 = "http://li367-204.members.linode.com/getlatlng?email=" + email;
+        String url2 = "http://li367-204.members.linode.com/getlatlng?email=" + ownerEmail;
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url2, (String)null, new Response.Listener<JSONObject>()
         {
             @Override
@@ -272,7 +280,6 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 try
                 {
                     tempJSONArray = response.getJSONArray("result");
-                    //Toast.makeText(ParkingDetailsActivity.this, "" + tempJSONArray.length(), Toast.LENGTH_LONG).show();
                     tempJSONObject=tempJSONArray.getJSONObject(0);
                     String lat=tempJSONObject.getString("lat");
                     String lng=tempJSONObject.getString("lng");
@@ -296,11 +303,6 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 });
         queue.add(jsonObjectRequest1);
 
-
-        String userEmail=getIntent().getStringExtra("user_email");
-        String ownerEmail=getIntent().getStringExtra("owner_email");
-        //String startDate=arrivalStartDateBtn.getText().toString();
-        //String endDate=arrivalEndDateBtn.getText().toString();
         String startTime=arrivalStartTimeBtn.getText().toString();
         String endTime=arrivalEndTimeBtn.getText().toString();
         SimpleDateFormat displayFormat=new SimpleDateFormat("HH:mm");
@@ -329,11 +331,74 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             DateTime dateTime2 = new DateTime(endYear, endMonth, endDay, endHour, endMinute, 0);
             Interval interval = new Interval(dateTime1, dateTime2);
             Duration duration = interval.toDuration();
-            long hours=duration.getStandardHours();
+            hours=duration.getStandardHours();
+            getCustomerKey();
+            //getAccountBalance();
         }
         catch (Exception e)
         {
             Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void getCustomerKey()
+    {
+        RequestQueue queue1 = Volley.newRequestQueue(ParkingDetailsActivity.this);
+        String url1 = "http://li367-204.members.linode.com/getcustomerkey?email=" + ownerEmail;
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    tempJSONArray = response.getJSONArray("result");
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                    ownerCustomerId=tempJSONObject.getString("customerkey");
+                }
+                catch(JSONException e)
+                {
+                    Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue1.add(jsonObjectRequest1);
+
+        RequestQueue queue2 = Volley.newRequestQueue(ParkingDetailsActivity.this);
+        String url2 = "http://li367-204.members.linode.com/getcustomerkey?email=" + userEmail;
+        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url2, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    tempJSONArray = response.getJSONArray("result");
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                    userCustomerId=tempJSONObject.getString("customerkey");
+                }
+                catch(JSONException e)
+                {
+                    Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error)
+                    {
+                        Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue2.add(jsonObjectRequest2);
     }
 }
