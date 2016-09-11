@@ -81,6 +81,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final double earth = 6372.8; // In kilometers
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 6;
+    private static final double MAX_DISTANCE=1.6;
 
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
@@ -183,7 +184,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateLocation();
         m_Location = getLocation();
         LatLng latLng = new LatLng(m_Location.getLatitude(), m_Location.getLongitude());
-        CameraUpdate center = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        CameraUpdate center = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.moveCamera(center);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -582,7 +583,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         protected void onPostExecute(Object[] result) {
             double d=(Double)result[1];
             Marker m=(Marker)result[0];
-            if (d < 0.4) m.setVisible(true);
+            if (d < MAX_DISTANCE) m.setVisible(true);
             else m.setVisible(false);
         }
 
