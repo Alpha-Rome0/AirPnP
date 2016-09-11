@@ -61,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         final TextView tv = (TextView) findViewById(R.id.register_text);
         tv.setTypeface(tf);
 
-        ownerRegister = (Switch)
+//        ownerRegister = (Switch)
     }
 
     public void button1_onClick(View v)

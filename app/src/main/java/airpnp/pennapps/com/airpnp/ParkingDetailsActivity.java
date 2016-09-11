@@ -128,14 +128,11 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     TextView textView2=(TextView)findViewById(R.id.tv_phone);
                     TextView textView3=(TextView)findViewById(R.id.tv_rate);
                     TextView textView4=(TextView)findViewById(R.id.tv_rules);
-                    textView1.setText(ownerFirstName + " " + ownerLastName);
-                    textView2.setText(phone);
-                    textView3.setText("$" + hourlyRate + "/hr");
-                    textView4.setText("No Minivans please");
+                    textView1.setText("Name: " + ownerFirstName + " " + ownerLastName);
+                    textView2.setText("Contact: " + phone);
+                    textView3.setText("Rate: $" + hourlyRate + " / hr");
+                    textView4.setText("Remarks: No Minivans please");
 
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                    Date date=new Date();
-                    //textView3.setText(simpleDateFormat.format(date));
                 }
                 catch(JSONException e)
                 {
