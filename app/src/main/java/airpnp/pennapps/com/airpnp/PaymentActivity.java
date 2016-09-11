@@ -1,9 +1,9 @@
 package airpnp.pennapps.com.airpnp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +47,14 @@ public class PaymentActivity extends AppCompatActivity {
         ownerEmail=getIntent().getStringExtra("ownerEmail");
         hours=String.valueOf(getIntent().getIntExtra("hours", 0));
         textView = (TextView)findViewById(R.id.textView1);
+        Button button=(Button)findViewById(R.id.btn_book);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyApplication.markerHashMap.get(ownerEmail).remove();
+                MyApplication.markerHashMap.remove(ownerEmail);
+            }
+        });
         getName(userEmail);
         //getAddress(ownerEmail);
         //setMessageText();
@@ -64,10 +72,7 @@ public class PaymentActivity extends AppCompatActivity {
                     tempJSONObject = tempJSONArray.getJSONObject(0);
                     firstName = tempJSONObject.getString("firstname");
                     lastName = tempJSONObject.getString("lastname");
-                    String text = textView.getText().toString();
-                    text.replace("#firstName", firstName);
-                    text.replace("#lastName", lastName);
-                    textView.setText(text);
+                    getAddress(ownerEmail);
                 } catch (JSONException e) {
                     Toast.makeText(PaymentActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
@@ -80,34 +85,6 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
         queue.add(jsonObjectRequest);
-
-        RequestQueue queue1 = Volley.newRequestQueue(PaymentActivity.this);
-        String url1 = "http://li367-204.members.linode.com/getparkingdetails?email=" + ownerEmail;
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String) null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    tempJSONArray = response.getJSONArray("data");
-                    tempJSONObject = tempJSONArray.getJSONObject(0);
-                    street = tempJSONObject.getString("street");
-                    city = tempJSONObject.getString("city");
-                    state = tempJSONObject.getString("state");
-                    zipCode = tempJSONObject.getString("zipcode");
-                    Toast.makeText(PaymentActivity.this, street + " " + city + " " + state + " " + zipCode, Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    Toast.makeText(PaymentActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        },
-        new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(PaymentActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
-        queue1.add(jsonObjectRequest1);
-
-
         //textView.setText("Good day to you " + firstName + " " + lastName + "!\\nYou have requested a space at " + street + " " + city + " " + state + " " + zipCode + " for " + hours + " hrs.\\n\\nHere is your total for the day:");
         TextView textView1 = (TextView)findViewById(R.id.money_int);
         TextView textView2 = (TextView)findViewById(R.id.money_decimal);
@@ -129,6 +106,8 @@ public class PaymentActivity extends AppCompatActivity {
                     city = tempJSONObject.getString("city");
                     state = tempJSONObject.getString("state");
                     zipCode = tempJSONObject.getString("zipcode");
+                    String text="Good day to you " + firstName + " " + lastName + "!\nYou have requested a space at " + street + " " + city + " " + state + " " + zipCode + " for " + hours + " hrs.\nHere is your total for the day:";
+                    textView.setText(text);
                 } catch (JSONException e) {
                     Toast.makeText(PaymentActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
@@ -143,15 +122,6 @@ public class PaymentActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
-    public void setMessageText()
-    {
-        TextView textView = (TextView)findViewById(R.id.textView1);
-        textView.setText("Good day to you " + firstName + " " + lastName + "!\\nYou have requested a space at " + street + " " + city + " " + state + " " + zipCode + " for " + hours + " hrs.\\n\\nHere is your total for the day:");
-        TextView textView1 = (TextView)findViewById(R.id.money_int);
-        TextView textView2 = (TextView)findViewById(R.id.money_decimal);
-        textView1.setText(getIntent().getStringExtra("cost"));
-        textView2.setText("00");
-    }
 
     public void payParking(View view) {
     }
