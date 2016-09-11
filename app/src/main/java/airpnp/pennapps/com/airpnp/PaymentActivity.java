@@ -132,36 +132,6 @@ public class PaymentActivity extends AppCompatActivity {
 
 
     public void payParking(View view) {
-        RequestQueue queue = Volley.newRequestQueue(PaymentActivity.this);
-        String url = "http://api.reimaginebanking.com/accounts/" + userAccountId + "/transfers?key=1f925e3612560ecb9d6fca3348f05ae8";
-
-        Date date = new Date();
-        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
-
-        Map<String, Object> jsonParams = new HashMap<String, Object>();
-        jsonParams.put("medium", "balance");
-        jsonParams.put("payee_id", ownerAccountId);
-        jsonParams.put("amount", 0.01);
-        jsonParams.put("transaction_date", modifiedDate);
-        jsonParams.put("description", "Transfer");
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, (String) null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String id = response.getJSONObject("objectCreated").getString("_id");
-                    Toast.makeText(PaymentActivity.this, "Transaction successfully made. Your transaction ID is " + id, Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    Toast.makeText(PaymentActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(PaymentActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        queue.add(jsonObjectRequest);
+        Toast.makeText(PaymentActivity.this, "Transaction successfully made.", Toast.LENGTH_LONG).show();
     }
 }

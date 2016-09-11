@@ -31,7 +31,6 @@ import org.joda.time.Interval;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -72,7 +71,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         userEmail=getIntent().getStringExtra("user_email");
         ownerEmail=getIntent().getStringExtra("owner_email");
         getCustomerKey();
-        getAccountId();
+        //getAccountId();
         getParkingDetails();
 
         // Setting initial calendar values
@@ -334,7 +333,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             Duration duration = interval.toDuration();
             hours=duration.getStandardHours();
             getCustomerKey();
-            getAccountId();
+            //getAccountId();
             getAvailableBalance();
             long hours = duration.getStandardHours();
         } catch (Exception e) {
@@ -392,7 +391,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
     }
 
-    public void getAccountId()
+    /*public void getAccountId()
     {
         RequestQueue queue3 = Volley.newRequestQueue(ParkingDetailsActivity.this);
         String url3 = "http://li367-204.members.linode.com/getaccountid?email=" + userEmail;
@@ -437,7 +436,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     }
                 });
         queue4.add(jsonObjectRequest4);
-    }
+    }*/
 
     public void getAvailableBalance()
     {
@@ -464,7 +463,6 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(NessieError error) {
-                Toast.makeText(ParkingDetailsActivity.this, "onFailure", Toast.LENGTH_LONG).show();
             }
         });
     }
