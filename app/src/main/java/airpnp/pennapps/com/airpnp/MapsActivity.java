@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -64,8 +63,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,10 +73,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static String TAG = "MAP LOCATION";
     Context mContext;
-    TextView mLocationMarkerText;
     private LatLng mCenterLatLong;
-    private ArrayList<LatLng> testlatlng = new ArrayList<>();
-    private ArrayList<Marker> testMarkers = new ArrayList<>();
     private IconGenerator iconFactory;
     private LocationManager m_LocationManager;
     private Location m_Location;
@@ -108,8 +102,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private JSONObject tempJSONObject;
     private JSONArray tempJSONArray;
 
-    private HashMap<Marker, String> markerHashMap = new HashMap<>();
-
     CoordinatorLayout cl;
 
     @Override
@@ -135,25 +127,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         cl = (CoordinatorLayout) findViewById(R.id.cl);
         final Snackbar snackbar = Snackbar.make(cl, "Use PIN to find parking spots nearby", Snackbar.LENGTH_LONG);
         snackbar.show();
-
-//        bubbleCard = (CardView) findViewById(R.id.bubble_card);
-//        mLocationMarkerText = (TextView) findViewById(R.id.locationMarkertext);
-//        //Change the text color when the user touches it
-//        bubbleCard.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        mLocationMarkerText.setTextColor(Color.parseColor("#03A9F4"));
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        mLocationMarkerText.setTextColor(Color.parseColor("#FFFFFF"));
-//                        bubbleCard.setVisibility(View.INVISIBLE);
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
 
 
         mapFragment.getMapAsync(this);
@@ -229,7 +202,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     startIntentService(mLocation);
 
-                    for (Marker m : testMarkers) {
+                    for (Marker m : MyApplication.markerHashMap.values()) {
                         LatLng l=m.getPosition();
                         Object[] o={l,m};
                         new LongOperation().execute(o);
@@ -253,11 +226,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String url = "http://li367-204.members.linode.com/listowners";
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
             @Override
-
             public void onResponse(JSONObject response)
             {
-                List<String> emailList=new ArrayList<>();
-                List<String> hourlyRateList=new ArrayList<>();
                 try
                 {
                     tempJSONArray = response.getJSONArray("data");
@@ -265,25 +235,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         tempJSONObject = tempJSONArray.getJSONObject(i);
                         double latitude = Double.parseDouble(tempJSONObject.getString("latitude"));
                         double longitude = Double.parseDouble(tempJSONObject.getString("longitude"));
-                        testlatlng.add(new LatLng(latitude, longitude));
+                        LatLng latLng=new LatLng(latitude, longitude);
                         String email=tempJSONObject.getString("email");
-                        emailList.add(email);
                         String hourlyRate=String.valueOf(tempJSONObject.getInt("rate"));
-                        hourlyRateList.add(hourlyRate);
+                        Marker marker=mMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$" + hourlyRate)))
+                                .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
+                                .visible(false)
+                                .title(email)
+                        );
+                        MyApplication.markerHashMap.put(email,marker);
                     }
                 } catch (JSONException e) {
                     Toast.makeText(MapsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                }
-                int j=0;
-                for (LatLng i : testlatlng) {
-                    Marker marker=mMap.addMarker(new MarkerOptions()
-                            .position(i)
-                            .icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("$" + hourlyRateList.get(j))))
-                            .anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
-                            .visible(false)
-                    );
-                    testMarkers.add(marker);
-                    markerHashMap.put(marker, emailList.get(j++));
                 }
             }
         },
@@ -305,18 +270,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
-
-//    @Override
-//    public void onLocationChanged(Location location) {
-//        try {
-//            if (location != null)
-//                changeMap(location);
-//            //LocationServices.FusedLocationApi.removeLocationUpdates(
-//            //        mGoogleApiClient, this);
-//
-//        } catch (Exception e) {
-//        }
-//    }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -409,7 +362,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         Intent intent=new Intent(MapsActivity.this, ParkingDetailsActivity.class);
         intent.putExtra("user_email", intent.getStringExtra("user_email"));
-        intent.putExtra("owner_email", markerHashMap.get(marker));
+        intent.putExtra("owner_email", marker.getTitle());
         startActivity(intent);
         return true;
     }
