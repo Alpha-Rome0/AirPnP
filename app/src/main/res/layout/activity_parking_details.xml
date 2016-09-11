@@ -187,6 +187,7 @@
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
                     android:text="# End Date"
+                    
                     android:id="@+id/btn_end_date" />
 
                 <Button
