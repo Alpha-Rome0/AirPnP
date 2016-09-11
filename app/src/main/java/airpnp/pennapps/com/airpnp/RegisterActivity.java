@@ -21,6 +21,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.config.Registry;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String city;
     private String state;
     private String zip;
+    private String customerkey;
 
     private Switch ownerRegister;
 
@@ -76,59 +79,26 @@ public class RegisterActivity extends AppCompatActivity {
         editText8=(EditText)findViewById(R.id.editText9);
         editText9=(EditText)findViewById(R.id.editText10);
 
-        firstName=editText1.getText().toString();
-        lastName=editText2.getText().toString();
-        email=editText3.getText().toString();
-        phone=editText4.getText().toString();
-        password=editText5.getText().toString();
-        streetAddress=editText6.getText().toString();
-        city=editText7.getText().toString();
-        state=editText8.getText().toString();
-        zip=editText9.getText().toString();
+        firstName=editText1.getText().toString().replace(" ", "%20");
+        lastName=editText2.getText().toString().replace(" ", "%20");
+        email=editText3.getText().toString().replace(" ", "%20");
+        phone=editText4.getText().toString().replace(" ", "%20");
+        password=editText5.getText().toString().replace(" ", "%20");
+        streetAddress=editText6.getText().toString().replace(" ", "%20");
+        city=editText7.getText().toString().replace(" ", "%20");
+        state=editText8.getText().toString().replace(" ", "%20");
+        zip=editText9.getText().toString().replace(" ", "%20");
 
         registerUser(firstName, lastName, email, phone, password, streetAddress, city, state, zip);
     }
 
     public void registerUser(String firstName, String lastName, String email, String phone, String password, String streetAddress, String city, String state, String zip)
     {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url1 = "http://li367-204.members.linode.com/register?firstname=" + firstName + "&lastname=" + lastName + "&email=" + email + "&phone=" + phone + "&password=" + password + "&street=" + streetAddress + "&city=" + city + "&state=" + state + "&zip=" + zip;
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String)null, new Response.Listener<JSONObject>()
-        {
-            @Override
-            public void onResponse(JSONObject response)
-            {
-                try
-                {
-                    String status = response.getString("status");
-                    if(status.equals("1"))
-                    {
-                        Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
-                        registerCapitalOne();
-                        startActivity(intent);
-                    }
-                }
-                catch(JSONException e)
-                {
-                    Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
-                        Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        queue.add(jsonObjectRequest1);
+        registerCapitalOne();
     }
 
     public void registerCapitalOne()
     {
-
         RequestQueue queue = Volley.newRequestQueue(this);
         String url="http://api.reimaginebanking.com/customers?key=1f925e3612560ecb9d6fca3348f05ae8";
         Map<String, Object> jsonParams1 = new HashMap<String, Object>();
@@ -151,14 +121,58 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("CAP", response.toString());
+                        try {
+                            customerkey = response.getJSONObject("objectCreated").getString("_id");
+                            Log.d("CAP", response.toString());
+                            Toast.makeText(RegisterActivity.this, customerkey, Toast.LENGTH_SHORT).show();
+
+                            RequestQueue queue1 = Volley.newRequestQueue(RegisterActivity.this);
+                            String url1 = "http://li367-204.members.linode.com/register?firstname=" + firstName + "&lastname=" + lastName + "&email=" + email + "&phone=" + phone + "&password=" + password + "&street=" + streetAddress + "&city=" + city + "&state=" + state + "&zip=" + zip + "&customerkey=" + customerkey;
+                            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String)null, new Response.Listener<JSONObject>()
+                            {
+                                @Override
+                                public void onResponse(JSONObject response)
+                                {
+                                    try
+                                    {
+                                        JSONArray jsonArray = response.getJSONArray("result");
+                                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                        String status = jsonObject.getString("status");
+                                        if(status.equals("1"))
+                                        {
+                                            Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                    catch(JSONException e)
+                                    {
+                                        e.printStackTrace();
+                                        Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            },
+                                    new Response.ErrorListener()
+                                    {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error)
+                                        {
+                                            Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                            queue1.add(jsonObjectRequest1);
+
+                        }
+                        catch(Exception e)
+                        {
+                            Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //   Handle Error
-                        Log.d("CAP", "ErrorResponse");
                         Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 }) {

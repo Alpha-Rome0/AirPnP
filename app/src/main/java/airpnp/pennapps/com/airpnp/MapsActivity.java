@@ -384,7 +384,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             latLong = new LatLng(location.getLatitude(), location.getLongitude());
 
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLong).zoom(19f).build();
+                    .target(latLong).zoom(22f).build();
 
             try {
                 mMap.setMyLocationEnabled(true);
@@ -517,7 +517,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // Zoom to position
                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(latLong).zoom(19f).build();
+                        .target(latLong).zoom(22f).build();
 
                 // Update Address field
 
