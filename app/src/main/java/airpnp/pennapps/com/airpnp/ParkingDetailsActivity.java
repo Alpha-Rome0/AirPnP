@@ -237,7 +237,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                 .appendQueryParameter("api_secret", getString(R.string.nexmo_secret))
                 .appendQueryParameter("from", "12675097486")
                 .appendQueryParameter("to", phone)
-                .appendQueryParameter("text", "Hi! This is AirPnP notifying you that " + userEmail + " booked your spot!");
+                .appendQueryParameter("text", "Hi! This is AirPnP notifying you that " + userEmail + "has booked your parking spot!");
         String url = builder.build().toString();
         Log.d("!!!", url);
 
