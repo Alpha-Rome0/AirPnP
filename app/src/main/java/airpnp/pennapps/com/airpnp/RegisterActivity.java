@@ -146,8 +146,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("CAP", "onResponse");
-                        Toast.makeText(RegisterActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                        Log.d("CAP", response.toString());
                     }
                 },
                 new Response.ErrorListener() {
