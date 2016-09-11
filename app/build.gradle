@@ -51,4 +51,6 @@ dependencies {
     compile 'joda-time:joda-time:2.9.4'
 
     compile 'com.reimaginebanking.api:nessie-android-sdk:1.0.3'
+
+    compile 'com.loopj.android:android-async-http:1.4.9'
 }

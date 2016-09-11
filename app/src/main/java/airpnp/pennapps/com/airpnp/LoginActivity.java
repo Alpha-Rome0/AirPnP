@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
         EditText editText2=(EditText)findViewById(R.id.password);
         final String email=editText1.getText().toString();
         String password=editText2.getText().toString();
-
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://li367-204.members.linode.com/login?email=" + email + "&password=" + password;
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()

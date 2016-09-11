@@ -2,11 +2,9 @@ package airpnp.pennapps.com.airpnp;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -22,16 +20,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.config.Registry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
+import cz.msebera.android.httpclient.Header;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -57,6 +56,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String state;
     private String zip;
     private String customerkey;
+    private String lat;
+    private String lng;
 
     private String ownerRemarks;
     private String ownerRates;
@@ -64,6 +65,11 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isDoingOwnerRegistration;
     private TextInputLayout textWrapperComments;
     private TextInputLayout textWrapperRates;
+
+    private JSONObject tempJSONObject;
+    private JSONArray tempJSONArray;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +127,34 @@ public class RegisterActivity extends AppCompatActivity {
 
         isDoingOwnerRegistration = ownerRegister.isChecked();
 
-        registerUser(firstName, lastName, email, phone, password, streetAddress, city, state, zip);
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + streetAddress+" "+state+"&sensor=true_or_false";
+        Log.d("!!!",url);
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // Root JSON in response is an dictionary i.e { "data : [ ... ] }
+                // Handle resulting parsed JSON response here
+                Log.d("!!!",response.toString());
+                try {
+                    tempJSONArray = response.getJSONArray("results");
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                    lat=tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lat");
+                    lng=tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lng");
+                    Log.d("!!!",lat);
+                    Log.d("!!!",lng);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.d("!!!",res.toString());
+            }
+        });
     }
 
     public void registerUser(String firstName, String lastName, String email, String phone, String password, String streetAddress, String city, String state, String zip)
