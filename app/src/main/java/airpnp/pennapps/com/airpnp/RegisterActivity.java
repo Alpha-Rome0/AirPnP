@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String state;
     private String zip;
 
+    private Switch ownerRegister;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,8 @@ public class RegisterActivity extends AppCompatActivity {
         final Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/ffs.ttf");
         final TextView tv = (TextView) findViewById(R.id.register_text);
         tv.setTypeface(tf);
+
+        ownerRegister = (Switch)
     }
 
     public void button1_onClick(View v)
