@@ -20,17 +20,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -56,9 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String city;
     private String state;
     private String zip;
-
-    private String responseServer;
-    private String customerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                     {
                         Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
-                        AsyncT1 asyncT = new AsyncT1();
-                        asyncT.execute();
+                        registerCapitalOne();
                         startActivity(intent);
                     }
                 }
@@ -133,110 +121,51 @@ public class RegisterActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest1);
     }
 
-    class AsyncT1 extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://api.reimaginebanking.com/customers?key=1f925e3612560ecb9d6fca3348f05ae8");
+    public void registerCapitalOne()
+    {
 
-            try {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url="http://api.reimaginebanking.com/customers?key=1f925e3612560ecb9d6fca3348f05ae8";
+        Map<String, Object> jsonParams1 = new HashMap<String, Object>();
 
-                JSONObject jsonobj = new JSONObject();
+        jsonParams1.put("first_name", firstName);
+        jsonParams1.put("last_name", lastName);
 
-                jsonobj.put("first_name", firstName);
-                jsonobj.put("last_name",  lastName);
+        Map<String, String> jsonParams2 = new HashMap<String, String>();
+        jsonParams2.put("street_number", streetAddress.split(" ")[0]);
+        jsonParams2.put("street_name", streetAddress.replace("^\\s*[0-9]+\\s+",""));
+        jsonParams2.put("city", city);
+        jsonParams2.put("state", state);
+        jsonParams2.put("zip", zip);
 
-                JSONObject address=new JSONObject();
-                address.put("street_number", streetAddress.split(" ")[0]);
-                address.put("street_name", streetAddress.replace("^\\s*[0-9]+\\s+",""));
-                address.put("city", city);
-                address.put("state", state);
-                address.put("zip", zip);
+        jsonParams1.put("address", jsonParams2);
 
-                jsonobj.put("address", address);
+        JsonObjectRequest postRequest = new JsonObjectRequest( Request.Method.POST, url,
 
-                httppost.setHeader("Content-Type", "application/json");
-
-                StringEntity se = new StringEntity(jsonobj.toString());
-                Log.i("TAG", jsonobj.toString());
-
-                //se.setContentEncoding("UTF-8");
-                se.setContentType("application/json");
-
-                httppost.setEntity(se);
-
-                // Execute HTTP Post Request
-                org.apache.http.HttpResponse response=httpclient.execute(httppost);
-                InputStream inputStream = response.getEntity().getContent();
-                InputStreamToStringExample str = new InputStreamToStringExample();
-                String responseServer = str.getStringFromInputStream(inputStream);
-                Log.d("response", "response -----" + responseServer);
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            try {
-                JSONObject jsonObject = new JSONObject(responseServer);
-                JSONObject jsonObject1=jsonObject.getJSONObject("objectCreated");
-                customerId=jsonObject1.getString("_id");
-
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static class InputStreamToStringExample {
-
-        public static void main(String[] args) throws IOException {
-
-            // intilize an InputStream
-            InputStream is =
-                    new ByteArrayInputStream("file content..blah blah".getBytes());
-
-            String result = getStringFromInputStream(is);
-
-            System.out.println(result);
-            System.out.println("Done");
-
-        }
-
-        // convert InputStream to String
-        private static String getStringFromInputStream(InputStream is) {
-
-            BufferedReader br = null;
-            StringBuilder sb = new StringBuilder();
-
-            String line;
-            try {
-
-                br = new BufferedReader(new InputStreamReader(is));
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                new JSONObject(jsonParams1),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("CAP", "onResponse");
+                        Toast.makeText(RegisterActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                     }
-                }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //   Handle Error
+                        Log.d("CAP", "ErrorResponse");
+                        Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("User-agent", System.getProperty("http.agent"));
+                return headers;
             }
-            return sb.toString();
-        }
-
+        };
+        queue.add(postRequest);
     }
 }
