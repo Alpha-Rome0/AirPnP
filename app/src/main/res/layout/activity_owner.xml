@@ -22,83 +22,92 @@
         android:textSize="60sp"
         android:layout_gravity="center_horizontal" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <AutoCompleteTextView
-            android:id="@+id/phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Phone"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="#fff"
-            android:imeOptions="actionNext"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="#fff"
-            android:imeOptions="actionNext"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Address"
-            android:inputType="textPostalAddress"
-            android:textColor="#fff"
-            android:imeOptions="actionNext"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Owner Details"
-            android:inputType="text"
-            android:textColor="#fff"
-            android:imeOptions="actionNext"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?android:textAppearanceSmall"
-        android:text="Submit"
-        android:id="@+id/button"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Here are a list of users who has given reviews for your parking area"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"/>
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<AutoCompleteTextView-->
+            <!--android:id="@+id/phone"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Phone"-->
+            <!--android:inputType="phone"-->
+            <!--android:maxLines="1"-->
+            <!--android:singleLine="true"-->
+            <!--android:textColor="#fff"-->
+            <!--android:imeOptions="actionNext"/>-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/Name"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Name"-->
+            <!--android:inputType="textPersonName"-->
+            <!--android:maxLines="1"-->
+            <!--android:singleLine="true"-->
+            <!--android:textColor="#fff"-->
+            <!--android:imeOptions="actionNext"/>-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/address"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Address"-->
+            <!--android:inputType="textPostalAddress"-->
+            <!--android:textColor="#fff"-->
+            <!--android:imeOptions="actionNext"/>-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<android.support.design.widget.TextInputLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/details"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Owner Details"-->
+            <!--android:inputType="text"-->
+            <!--android:textColor="#fff"-->
+            <!--android:imeOptions="actionNext"/>-->
+
+    <!--</android.support.design.widget.TextInputLayout>-->
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--style="?android:textAppearanceSmall"-->
+        <!--android:text="Submit"-->
+        <!--android:id="@+id/button"-->
+        <!--android:textStyle="bold"-->
+        <!--android:layout_gravity="center_horizontal" />-->
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/reviews"
-        style=""
+        android:background="#fff"
         />
 </LinearLayout>

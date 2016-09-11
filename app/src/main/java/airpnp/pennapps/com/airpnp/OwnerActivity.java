@@ -30,8 +30,6 @@ public class OwnerActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, reviews);
 
-
-
         // Bind to our new adapter.
         listview.setAdapter(adapter);
     }
