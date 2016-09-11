@@ -135,15 +135,15 @@ public class RegisterActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // Root JSON in response is an dictionary i.e { "data : [ ... ] }
                 // Handle resulting parsed JSON response here
-                Log.d("!!!",response.toString());
+                Log.d("!!!", response.toString());
                 try {
                     tempJSONArray = response.getJSONArray("results");
-                    tempJSONObject=tempJSONArray.getJSONObject(0);
-                    lat=tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lat");
-                    lng=tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lng");
-                    Log.d("!!!",lat);
-                    Log.d("!!!",lng);
-                }catch(Exception e){
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    lat = tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lat");
+                    lng = tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lng");
+                    Log.d("!!!", lat);
+                    Log.d("!!!", lng);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -151,10 +151,11 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Log.d("!!!",res);
+                Log.d("!!!", res);
             }
         });
     }
+
 
     public void registerUser(String firstName, String lastName, String email, String phone, String password, String streetAddress, String city, String state, String zip)
     {
@@ -216,14 +217,14 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 }
                             },
-                                    new Response.ErrorListener()
-                                    {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error)
-                                        {
-                                            Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                            new Response.ErrorListener()
+                            {
+                                @Override
+                                public void onErrorResponse(VolleyError error)
+                                {
+                                    Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            });
                             queue1.add(jsonObjectRequest1);
 
                         }

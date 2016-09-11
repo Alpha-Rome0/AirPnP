@@ -361,6 +361,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
         Intent intent = getIntent();
         String email=intent.getStringExtra("user_email");
         intent=new Intent(MapsActivity.this, ParkingDetailsActivity.class);
