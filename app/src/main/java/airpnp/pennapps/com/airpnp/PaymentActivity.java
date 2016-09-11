@@ -1,5 +1,6 @@
 package airpnp.pennapps.com.airpnp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,10 +14,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.reimaginebanking.api.nessieandroidsdk.models.Transfer;
+import com.reimaginebanking.api.nessieandroidsdk.requestclients.NessieClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PaymentActivity extends AppCompatActivity {
 
@@ -41,20 +49,20 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-        String ownerAccountId=getIntent().getStringExtra("ownerAccountId");
-        String userAccountId=getIntent().getStringExtra("userAccountId");
+        ownerAccountId=getIntent().getStringExtra("ownerAccountId");
+        userAccountId=getIntent().getStringExtra("userAccountId");
         userEmail=getIntent().getStringExtra("userEmail");
         ownerEmail=getIntent().getStringExtra("ownerEmail");
         hours=String.valueOf(getIntent().getIntExtra("hours", 0));
         textView = (TextView)findViewById(R.id.textView1);
-        Button button=(Button)findViewById(R.id.btn_book);
+        /*Button button=(Button)findViewById(R.id.btn_book);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MyApplication.markerHashMap.get(ownerEmail).remove();
                 MyApplication.markerHashMap.remove(ownerEmail);
             }
-        });
+        });*/
         getName(userEmail);
         //getAddress(ownerEmail);
         //setMessageText();
@@ -124,6 +132,36 @@ public class PaymentActivity extends AppCompatActivity {
 
 
     public void payParking(View view) {
-        
+        RequestQueue queue = Volley.newRequestQueue(PaymentActivity.this);
+        String url = "http://api.reimaginebanking.com/accounts/" + userAccountId + "/transfers?key=1f925e3612560ecb9d6fca3348f05ae8";
+
+        Date date = new Date();
+        String modifiedDate= new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+        Map<String, Object> jsonParams = new HashMap<String, Object>();
+        jsonParams.put("medium", "balance");
+        jsonParams.put("payee_id", ownerAccountId);
+        jsonParams.put("amount", 0.01);
+        jsonParams.put("transaction_date", modifiedDate);
+        jsonParams.put("description", "Transfer");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, (String) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String id = response.getJSONObject("objectCreated").getString("_id");
+                    Toast.makeText(PaymentActivity.this, "Transaction successfully made. Your transaction ID is " + id, Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    Toast.makeText(PaymentActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PaymentActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest);
     }
 }
