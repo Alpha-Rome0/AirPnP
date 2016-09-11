@@ -2,6 +2,7 @@ package airpnp.pennapps.com.airpnp;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -122,8 +123,8 @@ public class RegisterActivity extends AppCompatActivity {
         state=editText8.getText().toString().replace(" ", "%20");
         zip=editText9.getText().toString().replace(" ", "%20");
 
-        ownerRemarks = editText10.getText().toString();
-        ownerRates = editText11.getText().toString();
+        ownerRemarks = editText10.getText().toString().replace(" ", "%20");;
+        ownerRates = editText11.getText().toString().replace(" ", "%20");;
 
         isDoingOwnerRegistration = ownerRegister.isChecked();
 
@@ -146,6 +147,9 @@ public class RegisterActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                if(ownerRegister.isChecked())
+                    registerOwner();
+                registerCapitalOne();
             }
 
             @Override
@@ -156,6 +160,31 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    public void registerOwner()
+    {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://li367-204.members.linode.com/registerowner?email=" + email + "&rate=" + ownerRates + "&remarks=" + ownerRemarks + "&latitude=" + lat + "&longitude=" + lng;
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    tempJSONArray = response.getJSONArray("result");
+                    tempJSONObject=tempJSONArray.getJSONObject(0);
+                } catch (JSONException e) {
+                    Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue.add(jsonObjectRequest1);
+
+    }
 
     public void registerUser(String firstName, String lastName, String email, String phone, String password, String streetAddress, String city, String state, String zip)
     {
@@ -189,7 +218,6 @@ public class RegisterActivity extends AppCompatActivity {
                         try {
                             customerkey = response.getJSONObject("objectCreated").getString("_id");
                             Log.d("CAP", response.toString());
-                            Toast.makeText(RegisterActivity.this, customerkey, Toast.LENGTH_SHORT).show();
 
                             RequestQueue queue1 = Volley.newRequestQueue(RegisterActivity.this);
                             String url1 = "http://li367-204.members.linode.com/register?firstname=" + firstName + "&lastname=" + lastName + "&email=" + email + "&phone=" + phone + "&password=" + password + "&street=" + streetAddress + "&city=" + city + "&state=" + state + "&zip=" + zip + "&customerkey=" + customerkey;
