@@ -17,6 +17,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.reimaginebanking.api.nessieandroidsdk.NessieError;
+import com.reimaginebanking.api.nessieandroidsdk.NessieResultsListener;
+import com.reimaginebanking.api.nessieandroidsdk.models.Account;
+import com.reimaginebanking.api.nessieandroidsdk.requestclients.NessieClient;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -29,8 +33,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class ParkingDetailsActivity extends AppCompatActivity {
@@ -43,8 +49,10 @@ public class ParkingDetailsActivity extends AppCompatActivity {
     Button arrivalEndDateBtn;
     Button arrivalEndTimeBtn;
 
-    String phone;
-    Button book;
+    private String phone;
+    private Button book;
+
+    private double hourlyRate;
 
     public Calendar startDate;
     public Calendar endDate;
@@ -53,6 +61,8 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
     private String userCustomerId;
     private String ownerCustomerId;
+    private String userAccountId;
+    private String ownerAccountId;
     private String userEmail;
     private String ownerEmail;
 
@@ -63,7 +73,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         userEmail=getIntent().getStringExtra("user_email");
         ownerEmail=getIntent().getStringExtra("owner_email");
         getCustomerKey();
-
+        getAccountId();
         getParkingDetails();
 
         // Setting initial calendar values
@@ -130,7 +140,7 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     tempJSONObject = tempJSONArray.getJSONObject(0);
                     String ownerFirstName = tempJSONObject.getString("firstname");
                     String ownerLastName = tempJSONObject.getString("lastname");
-                    String hourlyRate = tempJSONObject.getString("rate");
+                    hourlyRate = Double.valueOf(tempJSONObject.getString("rate"));
                     phone = tempJSONObject.getString("phone");
                     TextView textView1 = (TextView) findViewById(R.id.tv_owner_name);
                     TextView textView2 = (TextView) findViewById(R.id.tv_phone);
@@ -319,7 +329,8 @@ public class ParkingDetailsActivity extends AppCompatActivity {
             Duration duration = interval.toDuration();
             hours=duration.getStandardHours();
             getCustomerKey();
-            //getAccountBalance();
+            getAccountId();
+            getAvailableBalance();
             long hours = duration.getStandardHours();
         } catch (Exception e) {
             Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
@@ -327,32 +338,24 @@ public class ParkingDetailsActivity extends AppCompatActivity {
         finish();
     }
 
-    public void getCustomerKey()
-    {
+    public void getCustomerKey() {
         RequestQueue queue1 = Volley.newRequestQueue(ParkingDetailsActivity.this);
         String url1 = "http://li367-204.members.linode.com/getcustomerkey?email=" + ownerEmail;
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String)null, new Response.Listener<JSONObject>()
-        {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url1, (String) null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONObject response)
-            {
-                try
-                {
+            public void onResponse(JSONObject response) {
+                try {
                     tempJSONArray = response.getJSONArray("result");
-                    tempJSONObject=tempJSONArray.getJSONObject(0);
-                    ownerCustomerId=tempJSONObject.getString("customerkey");
-                }
-                catch(JSONException e)
-                {
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    ownerCustomerId = tempJSONObject.getString("customerkey");
+                } catch (JSONException e) {
                     Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
+                    public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -360,31 +363,101 @@ public class ParkingDetailsActivity extends AppCompatActivity {
 
         RequestQueue queue2 = Volley.newRequestQueue(ParkingDetailsActivity.this);
         String url2 = "http://li367-204.members.linode.com/getcustomerkey?email=" + userEmail;
-        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url2, (String)null, new Response.Listener<JSONObject>()
-        {
+        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url2, (String) null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONObject response)
-            {
-                try
-                {
+            public void onResponse(JSONObject response) {
+                try {
                     tempJSONArray = response.getJSONArray("result");
-                    tempJSONObject=tempJSONArray.getJSONObject(0);
-                    userCustomerId=tempJSONObject.getString("customerkey");
-                }
-                catch(JSONException e)
-                {
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    userCustomerId = tempJSONObject.getString("customerkey");
+                } catch (JSONException e) {
                     Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError error)
-                    {
+                    public void onErrorResponse(VolleyError error) {
                         Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
         queue2.add(jsonObjectRequest2);
+
+        NessieClient nessieClient=NessieClient.getInstance("1f925e3612560ecb9d6fca3348f05ae8");
+
+    }
+
+    public void getAccountId()
+    {
+        RequestQueue queue3 = Volley.newRequestQueue(ParkingDetailsActivity.this);
+        String url3 = "http://li367-204.members.linode.com/getaccountid?email=" + userEmail;
+        JsonObjectRequest jsonObjectRequest3 = new JsonObjectRequest(Request.Method.GET, url3, (String) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    tempJSONArray = response.getJSONArray("result");
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    userAccountId = tempJSONObject.getString("accountid");
+                } catch (JSONException e) {
+                    Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue3.add(jsonObjectRequest3);
+
+        RequestQueue queue4 = Volley.newRequestQueue(ParkingDetailsActivity.this);
+        String url4 = "http://li367-204.members.linode.com/getaccountid?email=" + ownerEmail;
+        JsonObjectRequest jsonObjectRequest4 = new JsonObjectRequest(Request.Method.GET, url4, (String) null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    tempJSONArray = response.getJSONArray("result");
+                    tempJSONObject = tempJSONArray.getJSONObject(0);
+                    ownerAccountId = tempJSONObject.getString("accountid");
+                } catch (JSONException e) {
+                    Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ParkingDetailsActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        queue4.add(jsonObjectRequest4);
+    }
+
+    public void getAvailableBalance()
+    {
+        NessieClient nessieClient=NessieClient.getInstance("1f925e3612560ecb9d6fca3348f05ae8");
+        nessieClient.ACCOUNT.getAccount(userAccountId, new NessieResultsListener() {
+            @Override
+            public void onSuccess(Object result) {
+                Account account = (Account)result;
+                String accountBalance="" + account.getBalance();
+                int a=(int)hours;
+                Double b=new Double(hourlyRate);
+                int x=b.intValue();
+                int cost=a*x;
+                Intent intent=new Intent();
+                intent.putExtra("hours", a);
+                intent.putExtra("hourlyRate", hourlyRate);
+                intent.putExtra("ownerAccountId", ownerAccountId);
+                intent.putExtra("userAccountId", userAccountId);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onFailure(NessieError error) {
+                Toast.makeText(ParkingDetailsActivity.this, "onFailure", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

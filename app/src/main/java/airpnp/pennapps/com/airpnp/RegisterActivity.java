@@ -127,34 +127,60 @@ public class RegisterActivity extends AppCompatActivity {
 
         isDoingOwnerRegistration = ownerRegister.isChecked();
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + streetAddress+" "+state+"&sensor=true_or_false";
-        Log.d("!!!",url);
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // Root JSON in response is an dictionary i.e { "data : [ ... ] }
-                // Handle resulting parsed JSON response here
-                Log.d("!!!",response.toString());
-                try {
-                    tempJSONArray = response.getJSONArray("results");
-                    tempJSONObject=tempJSONArray.getJSONObject(0);
-                    lat=tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lat");
-                    lng=tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lng");
-                    Log.d("!!!",lat);
-                    Log.d("!!!",lng);
-                }catch(Exception e){
-                    e.printStackTrace();
+        if(isDoingOwnerRegistration) {
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + streetAddress + "%20" + city + "%20" + state + "&sensor=true_or_false";
+            Log.d("!!!", url);
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.get(url, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    // Root JSON in response is an dictionary i.e { "data : [ ... ] }
+                    // Handle resulting parsed JSON response here
+                    Log.d("!!!", response.toString());
+                    try {
+                        tempJSONArray = response.getJSONArray("results");
+                        tempJSONObject = tempJSONArray.getJSONObject(0);
+                        lat = tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lat");
+                        lng = tempJSONObject.getJSONObject("geometry").getJSONObject("location").getString("lng");
+                        Log.d("!!!", lat);
+                        Log.d("!!!", lng);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Log.d("!!!",res.toString());
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                    Log.d("!!!", res.toString());
+                }
+            });
+            Toast.makeText(RegisterActivity.this, lat + " " + lng, Toast.LENGTH_LONG).show();
+            url="http://li367-204.members.linode.com/resgisterowner?email=" + email + "&latitude=" + lat + "&longitude=" + lng + "&rate=" + ownerRates + "&remarks=" + ownerRemarks;
+            queue = Volley.newRequestQueue(this);
+            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, url, (String)null, new Response.Listener<JSONObject>()
+            {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONArray jsonArray = response.getJSONArray("result");
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+                        String status = jsonObject.getString("status");
+
+                    } catch (JSONException e) {
+                        Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+            queue.add(jsonObjectRequest1);
+        }
     }
 
     public void registerUser(String firstName, String lastName, String email, String phone, String password, String streetAddress, String city, String state, String zip)
@@ -217,14 +243,14 @@ public class RegisterActivity extends AppCompatActivity {
                                     }
                                 }
                             },
-                                    new Response.ErrorListener()
-                                    {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error)
-                                        {
-                                            Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                            new Response.ErrorListener()
+                            {
+                                @Override
+                                public void onErrorResponse(VolleyError error)
+                                {
+                                    Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            });
                             queue1.add(jsonObjectRequest1);
 
                         }
