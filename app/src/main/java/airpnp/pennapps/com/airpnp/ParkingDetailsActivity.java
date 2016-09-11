@@ -31,6 +31,7 @@ import org.joda.time.Interval;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -138,16 +139,23 @@ public class ParkingDetailsActivity extends AppCompatActivity {
                     tempJSONObject = tempJSONArray.getJSONObject(0);
                     String ownerFirstName = tempJSONObject.getString("firstname");
                     String ownerLastName = tempJSONObject.getString("lastname");
+                    String street = tempJSONObject.getString("street");
+                    String city = tempJSONObject.getString("city");
+                    String state = tempJSONObject.getString("state");
                     hourlyRate = Double.valueOf(tempJSONObject.getString("rate"));
                     phone = tempJSONObject.getString("phone");
                     TextView textView1 = (TextView) findViewById(R.id.tv_owner_name);
                     TextView textView2 = (TextView) findViewById(R.id.tv_phone);
                     TextView textView3 = (TextView) findViewById(R.id.tv_rate);
                     TextView textView4 = (TextView) findViewById(R.id.tv_rules);
+                    TextView textView5 = (TextView) findViewById(R.id.tv_house_name);
+                    TextView textView6 = (TextView) findViewById(R.id.tv_house_addr);
                     textView1.setText("Name: " + ownerFirstName + " " + ownerLastName);
                     textView2.setText("Contact: " + phone);
                     textView3.setText("Rate: $" + hourlyRate + " / hr");
                     textView4.setText("Remarks: No Minivans please");
+                    textView5.setText(street);
+                    textView6.setText(city);
 
                 } catch (JSONException e) {
                     Toast.makeText(ParkingDetailsActivity.this, e.toString(), Toast.LENGTH_LONG).show();
