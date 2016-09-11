@@ -127,7 +127,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         isDoingOwnerRegistration = ownerRegister.isChecked();
 
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://maps.googleapis.com/maps/api/geocode/json?address=" + streetAddress+" "+state+"&sensor=true_or_false";
         Log.d("!!!",url);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -152,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                Log.d("!!!",res.toString());
+                Log.d("!!!",res);
             }
         });
     }
