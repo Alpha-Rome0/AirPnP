@@ -43,6 +43,7 @@
 
         <activity
             android:name=".ParkingDetailsActivity"
+            android:label="Ready to Park?"
             android:screenOrientation="portrait" />
 
         <activity
