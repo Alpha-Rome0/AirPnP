@@ -185,11 +185,30 @@
                         android:layout_marginTop="15dp" />
                 </android.support.design.widget.TextInputLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_wrapper_comments"
+                    android:visibility="gone">
+                    <EditText
+                        android:id="@+id/owner_remarks"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="House Rules, Remarks etc."
+                        android:inputType="textMultiLine"
+                        android:maxLines="4"
+                        android:gravity="top|left"
+                        android:singleLine="true"
+                        android:textColor="#fff"/>
+                </android.support.design.widget.TextInputLayout>
+
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="?android:textAppearanceSmall"
                     android:text="Register"
                     android:id="@+id/button1"
+                    android:textStyle="bold"
                     android:layout_marginTop="20dp"
                     android:onClick="button1_onClick"
                     android:layout_marginBottom="192dp"/>

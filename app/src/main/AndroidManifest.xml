@@ -22,7 +22,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
 
-
         <!-- Activities -->
         <activity
             android:name=".LoginActivity"
@@ -30,7 +29,6 @@
             android:theme="@style/AppTheme.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,8 +40,15 @@
             android:name=".MapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Maps" />
-        <activity android:name=".ParkingDetailsActivity" />
-        <activity android:name=".OwnerActivity"></activity>
+
+        <activity
+            android:name=".ParkingDetailsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".OwnerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Owners" />
     </application>
 
 </manifest>
