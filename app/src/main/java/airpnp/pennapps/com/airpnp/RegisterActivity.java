@@ -45,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText editText8;
     private EditText editText9;
     private EditText editText10;
+    private EditText editText11;
 
     private String firstName;
     private String lastName;
@@ -58,9 +59,11 @@ public class RegisterActivity extends AppCompatActivity {
     private String customerkey;
 
     private String ownerRemarks;
+    private String ownerRates;
     private Switch ownerRegister;
     private boolean isDoingOwnerRegistration;
     private TextInputLayout textWrapperComments;
+    private TextInputLayout textWrapperRates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         tv.setTypeface(tf);
 
         textWrapperComments = (TextInputLayout) findViewById(R.id.text_wrapper_comments);
+        textWrapperRates = (TextInputLayout) findViewById(R.id.text_wrapper_rates);
 
         ownerRegister = (Switch) findViewById(R.id.admin_lock_switch);
         ownerRegister.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -79,8 +83,10 @@ public class RegisterActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
                 if (bChecked) {
                     textWrapperComments.setVisibility(View.VISIBLE);
+                    textWrapperRates.setVisibility(View.VISIBLE);
                 } else {
                     textWrapperComments.setVisibility(View.GONE);
+                    textWrapperRates.setVisibility(View.GONE);
                 }
             }
         });
@@ -98,6 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
         editText8=(EditText)findViewById(R.id.editText9);
         editText9=(EditText)findViewById(R.id.editText10);
         editText10=(EditText)findViewById(R.id.owner_remarks);
+        editText11=(EditText)findViewById(R.id.hourly_rate);
 
         firstName=editText1.getText().toString().replace(" ", "%20");
         lastName=editText2.getText().toString().replace(" ", "%20");
@@ -110,6 +117,8 @@ public class RegisterActivity extends AppCompatActivity {
         zip=editText9.getText().toString().replace(" ", "%20");
 
         ownerRemarks = editText10.getText().toString();
+        ownerRates = editText11.getText().toString();
+
         isDoingOwnerRegistration = ownerRegister.isChecked();
 
         registerUser(firstName, lastName, email, phone, password, streetAddress, city, state, zip);

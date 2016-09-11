@@ -202,6 +202,20 @@
                         android:textColor="#fff"/>
                 </android.support.design.widget.TextInputLayout>
 
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_wrapper_rates"
+                    android:visibility="gone">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/hourly_rate"
+                        android:hint="Hourly Rates"
+                        android:inputType="numberDecimal"
+                        android:textColor="#FFF"/>
+                </android.support.design.widget.TextInputLayout>
+
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
